@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/dark_six</color>
-    <color name="colorPrimaryDark">@color/dark_seven</color>
-    <color name="colorAccent">@color/grey_blue</color>
-
     <color name="ic_launcher_background">#191A29</color>
+
+    <!-- https://material.io/resources/color -->
+    <color name="primaryColor">@color/dark_six</color>
+    <color name="primaryLightColor">@color/slate</color>
+    <color name="primaryDarkColor">@color/dark_seven</color>
+    <color name="secondaryColor">@color/grey_blue</color>
+    <color name="secondaryLightColor">@color/blue_grey</color>
+    <color name="secondaryDarkColor">@color/dusk</color>
+    <color name="primaryTextColor">@android:color/white</color>
+    <color name="secondaryTextColor">@android:color/white</color>
 
     <!-- Zeplin Stylesheet -->
     <color name="watermelon">#ff4465</color>

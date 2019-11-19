@@ -2,10 +2,22 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents">
+        <!-- https://material.io/develop/android/theming/color/ -->
+        <!-- https://medium.com/over-engineering/setting-up-a-material-components-theme-for-android-fbf7774da739 -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
+        <item name="colorError">@color/colorNegative</item>
+        <item name="colorOnError">@color/secondaryTextColor</item>
+        <item name="android:colorBackground">?attr/colorPrimary</item>
+
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/dark_six</item>
+
+
         <item name="textAppearanceTitle">@style/TextAppearance.H1.Title</item>
 
     </style>
@@ -27,5 +39,6 @@
     </style>
 
     <attr name="textAppearanceTitle" format="reference"></attr>
+    <attr name="buttonStyleGradient" format="reference"></attr>
 
 </resources>
