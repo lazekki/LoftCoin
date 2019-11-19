@@ -4,8 +4,8 @@
     <style name="AppTheme" parent="Theme.MaterialComponents">
         <!-- https://material.io/develop/android/theming/color/ -->
         <!-- https://medium.com/over-engineering/setting-up-a-material-components-theme-for-android-fbf7774da739 -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
@@ -14,11 +14,16 @@
         <item name="colorOnError">@color/secondaryTextColor</item>
         <item name="android:colorBackground">?attr/colorPrimary</item>
 
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/dark_six</item>
-
-
+        <item name="textAppearanceHeadline1">@style/TextAppearance.AppTheme.H1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.AppTheme.H2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.AppTheme.H3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.AppTheme.H4</item>
         <item name="textAppearanceTitle">@style/TextAppearance.H1.Title</item>
+
+        <item name="buttonStyleGradient">@style/Widget.AppTheme.Button.Gradient</item>
+
+        <item name="actionBarTheme">@style/AppTheme.AppBarOverlay</item>
+        <item name="actionBarPopupTheme">@style/AppTheme.PopupOverlay</item>
 
     </style>
 
@@ -27,17 +32,57 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:background">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="TextAppearance.AppTheme" parent="TextAppearance.MaterialComponents.Body1" />
+
     <style name="TextAppearance.H1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="android:textSize">36sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="TextAppearance.AppTheme.H1">
+        <item name="android:textSize">36sp</item>
+    </style>
 
-    <style name="TextAppearance.H1.Title" parent="TextAppearance.MaterialComponents.Headline1">
+    <style name="TextAppearance.AppTheme.H2">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H3">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H4">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.H1.Title">
         <item name="android:textSize">48sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Widget.AppTheme.Button.Gradient" parent="Widget.MaterialComponents.TextView">
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">88dip</item>
+        <item name="android:background">@drawable/btn_golden_yellow</item>
+        <item name="android:textAppearance">?attr/textAppearanceButton</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:paddingStart">64dp</item>
+        <item name="android:paddingEnd">64dp</item>
+    </style>
+
+    <style name="Widget.AppTheme.BottomNav" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="android:background">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <!-- Custom Attributes -->
     <attr name="textAppearanceTitle" format="reference"></attr>
     <attr name="buttonStyleGradient" format="reference"></attr>
 
