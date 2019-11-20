@@ -3,6 +3,7 @@ package com.loftschool.ozaharenko.loftcoin19.ui.welcome;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,9 @@ import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
+    private static final String TAG = "WelcomeActivity";
+
+
     private RecyclerView recyclerView;
     private SnapHelper snapHelper;
 
@@ -24,6 +28,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.activity_welcome);
+        Log.d(TAG, "onCreate: ");
 
         recyclerView = findViewById(R.id.pager);
         recyclerView.setLayoutManager(new LinearLayoutManager(
