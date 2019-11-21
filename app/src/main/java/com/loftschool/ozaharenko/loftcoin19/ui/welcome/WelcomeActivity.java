@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.loftschool.ozaharenko.loftcoin19.R;
+import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
+import com.loftschool.ozaharenko.loftcoin19.ui.splash.SplashActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -34,9 +36,11 @@ public class WelcomeActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(recyclerView);
 
         recyclerView.swapAdapter(new WelcomePageAdapter(), false);
-
+        final Settings settings = new Settings(getApplicationContext());
         findViewById(R.id.btn_start).setOnClickListener((view) -> {
             startActivity(new Intent(this, MainActivity.class));
+            settings.doNotShowWelcomeScreenNextTime();
+            finish();
         });
     }
 
