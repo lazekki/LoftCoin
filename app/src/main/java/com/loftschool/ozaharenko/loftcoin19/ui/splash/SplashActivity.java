@@ -12,8 +12,6 @@ import com.loftschool.ozaharenko.loftcoin19.ui.welcome.WelcomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final String TAG = "SplashActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -22,7 +20,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         new Handler().postDelayed(()-> {
             startActivity(new Intent(this, WelcomeActivity.class));
-            Log.d(TAG, "onCreate: ");
             finish();
         }, 1000);
 

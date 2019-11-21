@@ -18,17 +18,13 @@ import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private static final String TAG = "WelcomeActivity";
-
-
     private RecyclerView recyclerView;
     private SnapHelper snapHelper;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        Log.d(TAG, "onCreate: ");
 
         recyclerView = findViewById(R.id.pager);
         recyclerView.setLayoutManager(new LinearLayoutManager(

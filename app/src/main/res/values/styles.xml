@@ -5,7 +5,7 @@
         <!-- https://material.io/develop/android/theming/color/ -->
         <!-- https://medium.com/over-engineering/setting-up-a-material-components-theme-for-android-fbf7774da739 -->
         <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
@@ -18,7 +18,7 @@
         <item name="textAppearanceHeadline2">@style/TextAppearance.AppTheme.H2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.AppTheme.H3</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.AppTheme.H4</item>
-        <item name="textAppearanceTitle">@style/TextAppearance.H1.Title</item>
+        <item name="textAppearanceTitle">@style/TextAppearance.AppTheme.H1.Title</item>
 
         <item name="buttonStyleGradient">@style/Widget.AppTheme.Button.Gradient</item>
 
@@ -30,7 +30,7 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
-        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -41,11 +41,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="TextAppearance.AppTheme" parent="TextAppearance.MaterialComponents.Body1" />
-
-    <style name="TextAppearance.H1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="android:textSize">36sp</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
 
     <style name="TextAppearance.AppTheme.H1">
         <item name="android:textSize">36sp</item>
@@ -63,7 +58,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextAppearance.H1.Title">
+    <style name="TextAppearance.AppTheme.H1.Title">
         <item name="android:textSize">48sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -85,7 +80,7 @@
     </style>
 
     <!-- Custom Attributes -->
-    <attr name="textAppearanceTitle" format="reference"></attr>
-    <attr name="buttonStyleGradient" format="reference"></attr>
+    <attr name="textAppearanceTitle" format="reference"/>
+    <attr name="buttonStyleGradient" format="reference"/>
 
 </resources>
