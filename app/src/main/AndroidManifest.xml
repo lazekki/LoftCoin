@@ -13,13 +13,17 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup">
 
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.welcome.WelcomeActivity"/>
+        <activity android:name=".ui.main.MainActivity" />
 
     </application>
 
