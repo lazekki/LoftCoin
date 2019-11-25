@@ -69,7 +69,6 @@ public class RatesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.currency_selector:
-                //here should be a call for onCreateDialog method, but it is not clear what should be a Bundle there
                 onCreateDialog(null).show();
                 return true;
             case R.id.menu_sorting:
