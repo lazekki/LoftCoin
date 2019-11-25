@@ -69,16 +69,17 @@ public class RatesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.currency_selector:
-                onCreateDialog(null).show();
+                onCreateDialogForCurrenciesSelection(null).show();
                 return true;
             case R.id.menu_sorting:
+                //to do something for menu_sorting
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialogForCurrenciesSelection(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.currency_selection_dialog_title).setItems((currencies_array), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
