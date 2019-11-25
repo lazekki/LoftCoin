@@ -12,7 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "CMC_API_KEY", '\"$p{pCoinMarketCapApiKey}\"'
+        buildConfigField "String", "CMC_API_KEY", "\"${pCoinMarketCapApiKey}\""
         buildConfigField "String", "CMC_API_ENDPOINT", '"https://pro-api.coinmarketcap.com/v1/"'
     }
 

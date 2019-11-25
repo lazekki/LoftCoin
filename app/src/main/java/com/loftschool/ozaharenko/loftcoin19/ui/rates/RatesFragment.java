@@ -1,9 +1,13 @@
 package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,6 +27,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
+
+import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
 
 public class RatesFragment extends Fragment {
 
@@ -58,6 +64,27 @@ public class RatesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.currency_selector:
+                //here should be a call for onCreateDialog method, but it is not clear what should be a Bundle there
+                return true;
+            case R.id.menu_sorting:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.currency_selection_dialog_title).setItems((currencies_array), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        return builder.create();
     }
 
     @Override
