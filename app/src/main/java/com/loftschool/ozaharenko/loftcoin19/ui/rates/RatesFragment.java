@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,8 +79,11 @@ public class RatesFragment extends Fragment {
     }
 
     public Dialog onCreateDialogForCurrenciesSelection(Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.currency_selection_dialog_title).setItems((currencies_array), new DialogInterface.OnClickListener() {
+
+        builder.setTitle(R.string.currency_selection_dialog_title)
+               .setItems(currencies_array, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
