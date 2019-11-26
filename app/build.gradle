@@ -5,10 +5,22 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.loftschool.ozaharenko.loftcoin19"
+
         minSdkVersion 21
         targetSdkVersion 29
+
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "CMC_API_KEY", "\"${pCoinMarketCapApiKey}\""
+        buildConfigField "String", "CMC_API_ENDPOINT", '"https://pro-api.coinmarketcap.com/v1/"'
+    }
+
+    // Will work only with Android Studio 3.6 or higher
+    // Essence of new feature - replacement for .findViewById and for dataBinding
+    //
+    viewBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -37,9 +49,17 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta3"
     implementation "androidx.recyclerview:recyclerview:1.1.0-rc01"
     implementation "androidx.preference:preference:1.1.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     implementation "com.jakewharton.timber:timber:4.7.1"
 
     compileOnly "com.google.auto.value:auto-value-annotations:1.7"
     annotationProcessor "com.google.auto.value:auto-value:1.7"
+
+    implementation "javax.inject:javax.inject:1"
+    implementation "com.squareup.moshi:moshi:1.9.2"  //lib for json parsing
+    implementation "com.squareup.okhttp3:okhttp:4.2.1"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
+    implementation "com.squareup.retrofit2:retrofit:2.6.1"
+    implementation "com.squareup.retrofit2:converter-moshi:2.6.1"
 }
