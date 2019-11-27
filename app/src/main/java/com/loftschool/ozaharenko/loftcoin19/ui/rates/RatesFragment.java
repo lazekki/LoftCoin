@@ -50,6 +50,7 @@ public class RatesFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentRatesBinding.inflate(inflater, container, false);
+        Timber.d("%s", this);
         return binding.getRoot();
     }
 

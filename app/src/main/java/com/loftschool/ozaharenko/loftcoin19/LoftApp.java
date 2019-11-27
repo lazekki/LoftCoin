@@ -10,6 +10,12 @@ import timber.log.Timber;
 
 public class LoftApp extends Application {
 
+    private AppComponent component;
+
+    public AppComponent getComponent() {
+        return component;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -17,6 +23,21 @@ public class LoftApp extends Application {
             StrictMode.enableDefaults();
             Timber.plant(new LoftTree());
         }
+
+        //if you use Builder:
+        /*component = DaggerAppComponent.builder()
+                .application(this)
+                .build();
+        */
+
+        //if you use Factory:
+        component = DaggerAppComponent.factory().create(this);
+
+        //when we do:
+        //component.context();
+        //there is next calls stack:
+        //component -> module -> factory.context(app) -> app.getApplicationContext()
+                                // (factory.context() = -> some implementation -> context for this app)
 
         //template to use new version of LoftTree.log method:
         //enter into any place where you need to throw something into Logcat, next code:

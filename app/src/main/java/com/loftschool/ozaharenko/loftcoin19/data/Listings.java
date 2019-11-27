@@ -8,7 +8,7 @@ import java.util.List;
 @AutoValue
 public abstract class Listings {
 
-    abstract List<AutoValue_Coin> data();
+    abstract List<Coin> data();
 
     public List<Coin> coins() {
         return Collections.unmodifiableList(data());
