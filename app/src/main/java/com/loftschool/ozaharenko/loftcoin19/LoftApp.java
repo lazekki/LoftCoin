@@ -10,9 +10,9 @@ import timber.log.Timber;
 
 public class LoftApp extends Application {
 
-    private AppComponent component;
+    private BaseComponent component;
 
-    public AppComponent getComponent() {
+    BaseComponent getComponent() {
         return component;
     }
 

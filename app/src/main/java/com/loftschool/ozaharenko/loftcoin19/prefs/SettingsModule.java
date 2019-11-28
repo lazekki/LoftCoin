@@ -13,7 +13,7 @@ public abstract class SettingsModule {
     @Provides
     @Singleton
     static Settings settings(Context context) {
-        return new DefaultSettings(context);
+        return new Settings(context);
     }
 
 }

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import com.loftschool.ozaharenko.loftcoin19.AppComponent;
+import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
@@ -45,7 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(recyclerView);
 
         //there is example of Service Locator pattern (usage of Settings through AppComponent) implementation:
-        final Settings settings = AppComponent.get(this).settings();
+        final Settings settings = BaseComponent.get(this).settings();
 
         findViewById(R.id.btn_start).setOnClickListener((view) -> {
             startActivity(new Intent(this, MainActivity.class));

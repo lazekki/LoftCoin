@@ -9,20 +9,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentConverterBinding;
+import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentRatesBinding;
+
 import timber.log.Timber;
 
 public class ConverterFragment extends Fragment {
 
+    private FragmentConverterBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-
+        binding = FragmentConverterBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Timber.d("%s", this);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

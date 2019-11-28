@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.loftschool.ozaharenko.loftcoin19.AppComponent;
+import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         //there is example of Service Locator pattern (usage of Settings through AppComponent) implementation:
-        final Settings settings = AppComponent.get(this).settings();
+        final Settings settings = BaseComponent.get(this).settings();
 
         new Handler().postDelayed(()-> {
             if (settings.shouldShowWelcomeScreen()) {

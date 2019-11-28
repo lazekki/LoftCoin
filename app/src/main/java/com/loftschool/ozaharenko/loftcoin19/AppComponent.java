@@ -1,11 +1,8 @@
 package com.loftschool.ozaharenko.loftcoin19;
 
 import android.app.Application;
-import android.content.Context;
 
-import androidx.annotation.NonNull;
-
-import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
+import com.loftschool.ozaharenko.loftcoin19.data.DataModule;
 import com.loftschool.ozaharenko.loftcoin19.prefs.SettingsModule;
 
 import javax.inject.Singleton;
@@ -23,21 +20,11 @@ import dagger.Component;
 //Module can be considered as abstract of memory bus from real world.
 @Component(modules = {
         AppModule.class,
-        SettingsModule.class
+        SettingsModule.class,
+        DataModule.class
 })
 
-public abstract class AppComponent {
-
-    public static AppComponent get(@NonNull Context context) {
-        if (context.getApplicationContext() instanceof LoftApp) {
-            return ((LoftApp)context.getApplicationContext()).getComponent();
-        }
-        throw new IllegalArgumentException("No such component in" + context);
-    }
-
-    public abstract Context context();
-
-    public abstract Settings settings();
+abstract class AppComponent implements BaseComponent {
 
     /*@Component.Builder
     abstract static class Builder {
