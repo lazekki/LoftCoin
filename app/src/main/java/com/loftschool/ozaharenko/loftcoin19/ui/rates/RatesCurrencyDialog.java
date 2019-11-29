@@ -26,10 +26,12 @@ import timber.log.Timber;
 
 public class RatesCurrencyDialog extends AppCompatDialogFragment {
 
-    @Inject
+ /*   @Inject
     CurrencyAdapter adapter;
 
     @Inject CurrencyRepo currencies;
+*/
+    private CurrencyAdapter adapter;
 
     private DialogCurrencyBinding binding;
 
@@ -57,7 +59,7 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
                 .create();
     }
 
-    @Override
+    /*@Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         binding.recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
@@ -71,6 +73,14 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
             dismissAllowingStateLoss();
         });
         binding.recycler.addOnItemTouchListener(onItemClick);
+    }
+*/
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        binding.recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        binding.recycler.setAdapter(adapter);
     }
 
     @Override

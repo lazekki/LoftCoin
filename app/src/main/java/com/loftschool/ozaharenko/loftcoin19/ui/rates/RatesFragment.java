@@ -44,14 +44,16 @@ public class RatesFragment extends Fragment {
 
     private FragmentRatesBinding binding;
 
+    private RatesComponent component;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerRatesComponent.builder()
+        component = DaggerRatesComponent.builder()
                 .baseComponent(BaseComponent.get(requireContext()))
                 .fragment(this)
-                .build()
-                .inject(this); //example of injection
+                .build();
+        component.inject(this); //example of injection
         navController = Navigation.findNavController(requireActivity(), R.id.main_host);
     }
 
@@ -113,10 +115,15 @@ public class RatesFragment extends Fragment {
         refresh();
     }
 
+
     @Override
     public void onDestroyView() {
         binding.recycler.swapAdapter(null, false);
         super.onDestroyView();
+    }
+
+    RatesComponent getComponent() {
+        return component;
     }
 
     private void refresh() {
