@@ -47,7 +47,6 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
         ));
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

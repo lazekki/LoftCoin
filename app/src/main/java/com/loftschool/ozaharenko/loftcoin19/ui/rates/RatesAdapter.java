@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.databinding.LiRateBinding;
+import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 
 import java.text.NumberFormat;
 import java.util.Locale;
