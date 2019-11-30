@@ -30,7 +30,7 @@ public abstract class Coin {
         public abstract double price();
 
         @AutoValue.CopyAnnotations
-        @Json(name="percent_change_24h")
+        @Json(name = "percent_change_24h")
         public abstract double change24h();
 
     }

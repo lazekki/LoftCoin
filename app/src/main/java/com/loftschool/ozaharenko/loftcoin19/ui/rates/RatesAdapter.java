@@ -2,7 +2,6 @@ package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -19,11 +18,16 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
     private LayoutInflater inflater;
 
-    RatesAdapter() {
+    //@Inject - requires for the component, what we are injecting (see RatesFragment.java -> row 51
+    //this word instructs Dagger that this is injectable class and it is allowed to create a factory for him
+    //we inject something into constructor - there is injection
+    @Inject RatesAdapter() {
         super(new DiffUtil.ItemCallback<Coin>() {
             @Override
             public boolean areItemsTheSame(@NonNull Coin oldItem, @NonNull Coin newItem) {

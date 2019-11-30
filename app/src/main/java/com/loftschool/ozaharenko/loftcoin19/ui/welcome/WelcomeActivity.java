@@ -2,10 +2,7 @@ package com.loftschool.ozaharenko.loftcoin19.ui.welcome;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -14,10 +11,10 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.ui.main.MainActivity;
-import com.loftschool.ozaharenko.loftcoin19.ui.splash.SplashActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -47,7 +44,9 @@ public class WelcomeActivity extends AppCompatActivity {
         snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
 
-        final Settings settings = new Settings(getApplicationContext());
+        //there is example of Service Locator pattern (usage of Settings through AppComponent) implementation:
+        final Settings settings = BaseComponent.get(this).settings();
+
         findViewById(R.id.btn_start).setOnClickListener((view) -> {
             startActivity(new Intent(this, MainActivity.class));
             settings.doNotShowWelcomeScreenNextTime();

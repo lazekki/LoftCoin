@@ -14,13 +14,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.data.CmcApi;
-import com.loftschool.ozaharenko.loftcoin19.data.CmcApiProvider;
 import com.loftschool.ozaharenko.loftcoin19.data.Listings;
 import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentRatesBinding;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,17 +35,26 @@ import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
 
 public class RatesFragment extends Fragment {
 
-    private CmcApi api;
+    @Inject CmcApi api; //component -> base(app)Component -> DataModule -> cmcApi()
 
-    private RatesAdapter adapter;
+    //we cannot inject into private fields, so we change 'private' to '@Inject'
+    @Inject RatesAdapter adapter; //this is exactly injection into object. component -> RatesAdapter()
+
+    private NavController navController;
 
     private FragmentRatesBinding binding;
+
+    private RatesComponent component;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = new CmcApiProvider().get();
-        adapter = new RatesAdapter();
+        component = DaggerRatesComponent.builder()
+                .baseComponent(BaseComponent.get(requireContext()))
+                .fragment(this)
+                .build();
+        component.inject(this); //example of injection
+        navController = Navigation.findNavController(requireActivity(), R.id.main_host);
     }
 
     @Nullable
@@ -50,6 +63,7 @@ public class RatesFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentRatesBinding.inflate(inflater, container, false);
+        Timber.d("%s", this);
         return binding.getRoot();
     }
 
@@ -62,13 +76,12 @@ public class RatesFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.currency_selector:
-                onCreateDialogForCurrenciesSelection(null).show();
+                navController.navigate(R.id.action_currency_dialog);
                 return true;
             case R.id.menu_sorting:
                 //to do something for menu_sorting
@@ -93,6 +106,7 @@ public class RatesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         binding.recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.recycler.setHasFixedSize(true);
         binding.recycler.swapAdapter(adapter, false);
@@ -100,10 +114,15 @@ public class RatesFragment extends Fragment {
         refresh();
     }
 
+
     @Override
     public void onDestroyView() {
         binding.recycler.swapAdapter(null, false);
         super.onDestroyView();
+    }
+
+    RatesComponent getComponent() {
+        return component;
     }
 
     private void refresh() {

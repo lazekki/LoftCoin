@@ -10,15 +10,26 @@
         android:name="com.loftschool.ozaharenko.loftcoin19.ui.wallets.WalletsFragment"
         android:label="@string/wallets"
         tools:layout="@layout/fragment_wallets"/>
+
     <fragment
         android:id="@+id/rates"
         android:name="com.loftschool.ozaharenko.loftcoin19.ui.rates.RatesFragment"
         android:label="@string/rates"
-        tools:layout="@layout/fragment_rates"/>
+        tools:layout="@layout/fragment_rates">
+        <action
+            android:id="@+id/action_currency_dialog"
+            app:destination="@id/currency_dialog" />
+    </fragment>
+
     <fragment
         android:id="@+id/converter"
         android:name="com.loftschool.ozaharenko.loftcoin19.ui.converter.ConverterFragment"
         android:label="@string/converter"
         tools:layout="@layout/fragment_converter"/>
+
+    <dialog
+        android:id="@+id/currency_dialog"
+        android:name="com.loftschool.ozaharenko.loftcoin19.ui.rates.RatesCurrencyDialog"
+        android:label="RatesCurrencyDialog" />
 
 </navigation>
