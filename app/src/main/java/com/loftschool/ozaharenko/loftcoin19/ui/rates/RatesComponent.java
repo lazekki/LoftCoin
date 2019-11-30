@@ -17,4 +17,6 @@ abstract class RatesComponent {
     //Dagger will generate special injector for such method' signature:
     abstract void inject(RatesFragment ratesFragment);
 
+    abstract void inject(RatesCurrencyDialog ratesCurrencyDialog);
+
 }

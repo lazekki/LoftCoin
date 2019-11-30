@@ -26,12 +26,9 @@ import timber.log.Timber;
 
 public class RatesCurrencyDialog extends AppCompatDialogFragment {
 
- /*   @Inject
-    CurrencyAdapter adapter;
+    @Inject CurrencyAdapter adapter;
 
     @Inject CurrencyRepo currencies;
-*/
-    private CurrencyAdapter adapter;
 
     private DialogCurrencyBinding binding;
 
@@ -40,13 +37,12 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new CurrencyAdapter();
-        // TODO: Move currencies to repository
-        adapter.submitList(Arrays.asList(
-                Currency.create("$", getString(R.string.usd), "USD"),
-                Currency.create("€", getString(R.string.eur), "EUR"),
-                Currency.create("₽", getString(R.string.rub), "RUB")
-        ));
+        DaggerRatesComponent.builder()
+                .baseComponent(BaseComponent.get(requireContext()))
+                .fragment(this)
+                .build()
+                .inject(this);
+        adapter.submitList(currencies.availableCurrencies());
     }
 
     @NonNull
@@ -58,23 +54,6 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
                 .setView(binding.getRoot())
                 .create();
     }
-
-    /*@Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        binding.recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        binding.recycler.setAdapter(adapter);
-        onItemClick = new OnItemClick(requireContext(), view -> {
-            final RecyclerView.ViewHolder viewHolder = binding.recycler
-                    .findContainingViewHolder(view);
-            if (viewHolder != null) {
-                currencies.setCurrency(adapter.getItem(viewHolder.getAdapterPosition()));
-            }
-            dismissAllowingStateLoss();
-        });
-        binding.recycler.addOnItemTouchListener(onItemClick);
-    }
-*/
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

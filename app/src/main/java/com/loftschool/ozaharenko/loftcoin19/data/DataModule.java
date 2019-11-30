@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi;
 
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -58,5 +59,8 @@ public abstract class DataModule {
     static CmcApi cmcApi(Retrofit retrofit) {
         return retrofit.create(CmcApi.class);
     }
+
+    @Binds
+    abstract CurrencyRepo currencyRepo(DefaultCurrencyRepo impl);
 
 }

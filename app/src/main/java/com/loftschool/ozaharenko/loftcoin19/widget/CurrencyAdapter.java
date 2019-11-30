@@ -15,12 +15,14 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import dagger.Provides;
+
 public class CurrencyAdapter extends ListAdapter<Currency, CurrencyAdapter.ViewHolder> {
 
     private LayoutInflater inflater;
 
     @Inject
-    public CurrencyAdapter() {
+    CurrencyAdapter() {
         super(new DiffUtil.ItemCallback<Currency>() {
             @Override
             public boolean areItemsTheSame(@NonNull Currency oldItem, @NonNull Currency newItem) {

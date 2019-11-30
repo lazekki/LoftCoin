@@ -82,7 +82,6 @@ public class RatesFragment extends Fragment {
         switch(item.getItemId()) {
             case R.id.currency_selector:
                 navController.navigate(R.id.action_currency_dialog);
-                new RatesCurrencyDialog().show(getChildFragmentManager(), RatesCurrencyDialog.class.getName());
                 return true;
             case R.id.menu_sorting:
                 //to do something for menu_sorting

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.loftschool.ozaharenko.loftcoin19.data.CmcApi;
+import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 
 public interface BaseComponent {
@@ -21,4 +22,6 @@ public interface BaseComponent {
     Settings settings();
 
     CmcApi cmcApi();
+
+    CurrencyRepo currencyRepo();
 }
