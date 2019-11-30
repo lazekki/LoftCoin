@@ -2,6 +2,7 @@ package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,10 +61,20 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
         super.onActivityCreated(savedInstanceState);
         binding.recycler.setLayoutManager(new LinearLayoutManager(requireActivity()));
         binding.recycler.setAdapter(adapter);
+        onItemClick = new OnItemClick(requireContext(), view -> {
+            RecyclerView.ViewHolder viewHolder = binding.recycler
+                    .findContainingViewHolder(view);
+            if (viewHolder != null) {
+                currencies.setCurrency(adapter.getItem(viewHolder.getAdapterPosition()));
+            }
+            dismissAllowingStateLoss();
+        });
+        binding.recycler.addOnItemTouchListener(onItemClick);
     }
 
     @Override
     public void onDestroy() {
+        Timber.d("DEFAULT CURRENCY: %s", currencies.getCurrency());
         binding.recycler.removeOnItemTouchListener(onItemClick);
         binding.recycler.setAdapter(null);
         super.onDestroy();

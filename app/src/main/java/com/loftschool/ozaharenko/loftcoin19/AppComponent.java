@@ -23,7 +23,7 @@ import dagger.Component;
         SettingsModule.class,
         DataModule.class
 })
-
+//https://dagger.dev/users-guide
 abstract class AppComponent implements BaseComponent {
 
     /*@Component.Builder
