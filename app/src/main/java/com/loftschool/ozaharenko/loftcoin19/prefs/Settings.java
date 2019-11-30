@@ -5,10 +5,5 @@ public interface Settings {
     boolean shouldShowWelcomeScreen();
 
     void doNotShowWelcomeScreenNextTime();
-
-    String getDefaultCurrencyCode();
-
-    void setDefaultCurrencyCode(String code);
-
 }
 

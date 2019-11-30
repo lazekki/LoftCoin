@@ -1,8 +1,11 @@
 package com.loftschool.ozaharenko.loftcoin19.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
@@ -17,12 +20,15 @@ import javax.inject.Singleton;
 @Singleton
 class DefaultCurrencyRepo implements CurrencyRepo {
 
-    private final Settings settings;
+    private static final String CURRENCY = "currency";
+
     private final Context context;
 
-    @Inject DefaultCurrencyRepo(Context context, Settings settings) {
+    private final SharedPreferences currencies;
+
+    @Inject DefaultCurrencyRepo(Context context) {
         this.context = context;
-        this.settings = settings;
+        currencies = context.getSharedPreferences("currencies", Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -38,9 +44,9 @@ class DefaultCurrencyRepo implements CurrencyRepo {
     @NonNull
     @Override
     public Currency getCurrency() {
-        final List<Currency> currencies = availableCurrencies();
-        for (Currency currency : currencies) {
-            if (Objects.equals(currency.code(), settings.getDefaultCurrencyCode())) {
+        final String selectedCurrency = currencies.getString(CURRENCY, "USD");
+        for (Currency currency : availableCurrencies()) {
+            if (Objects.equals(currency.code(), selectedCurrency)) {
                 return currency;
             }
         }
@@ -49,6 +55,21 @@ class DefaultCurrencyRepo implements CurrencyRepo {
 
     @Override
     public void setCurrency(@NonNull Currency currency) {
-        settings.setDefaultCurrencyCode(currency.code());
+        currencies.edit().putString(CURRENCY, currency.code()).apply();
+        //settings.setDefaultCurrencyCode(currency.code());
+    }
+
+    @NonNull
+    @Override
+    public LiveData<Currency> currency() {
+        return new MutableLiveData<Currency>() {
+            @Override
+            protected void onActive() {
+            }
+
+            @Override
+            protected void onInactive() {
+            }
+        };
     }
 }
