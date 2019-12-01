@@ -3,10 +3,12 @@ package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
+import com.loftschool.ozaharenko.loftcoin19.data.Currency;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
 
 import java.util.List;
@@ -29,6 +31,8 @@ public class RatesViewModel extends ViewModel {
     @Inject
     CurrencyRepo currencyRepo;
 
+    private Observer<Currency> currencyObserver;
+
     @NonNull
     public AtomicBoolean isInitialized() {
         return initialized;
@@ -44,12 +48,21 @@ public class RatesViewModel extends ViewModel {
         return loading;
     }
 
+    final void observeCurrencyChange() {
+        if (currencyObserver == null) {
+            currencyObserver = currency -> refresh();
+            currencyRepo.currency().observeForever(currencyObserver);
+        }
+    }
+
     final void refresh() {
-        coinsRepo.listings(coins, loading);
+        coinsRepo.listings(coins, loading, currencyRepo.getCurrency());
     }
 
     @Override
     protected void onCleared() {
-
+        if(currencyObserver != null) {
+            currencyRepo.currency().removeObserver(currencyObserver);
+        }
     }
 }

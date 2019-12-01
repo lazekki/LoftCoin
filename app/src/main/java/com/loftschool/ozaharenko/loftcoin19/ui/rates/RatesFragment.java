@@ -66,8 +66,7 @@ public class RatesFragment extends Fragment {
 
         //provider - subscriber model implementation:
         viewModel.getCoins().observe(this, adapter::submitList);
-
-        viewModel.refresh();
+        viewModel.observeCurrencyChange();
     }
 
     @Nullable

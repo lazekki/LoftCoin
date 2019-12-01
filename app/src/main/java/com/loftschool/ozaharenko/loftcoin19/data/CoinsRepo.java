@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface CoinsRepo {
     void listings(@NonNull MutableLiveData<List<Coin>> coins,
-                  @NonNull MutableLiveData<Boolean> loading);
+                  @NonNull MutableLiveData<Boolean> loading,
+                  @NonNull Currency currency);
 }

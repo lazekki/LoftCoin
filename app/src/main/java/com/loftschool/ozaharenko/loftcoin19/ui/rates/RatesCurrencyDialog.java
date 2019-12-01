@@ -74,7 +74,6 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
 
     @Override
     public void onDestroy() {
-        Timber.d("DEFAULT CURRENCY: %s", currencies.getCurrency());
         binding.recycler.removeOnItemTouchListener(onItemClick);
         binding.recycler.setAdapter(null);
         super.onDestroy();

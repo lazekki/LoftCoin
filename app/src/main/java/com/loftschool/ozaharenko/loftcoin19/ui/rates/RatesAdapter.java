@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.databinding.LiRateBinding;
+import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
+import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -22,12 +24,17 @@ import javax.inject.Inject;
 
 class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
+    private final PriceFormatter priceFormatter;
+
+    private final ChangeFormatter changeFormatter;
+
     private LayoutInflater inflater;
 
     //@Inject - requires for the component, what we are injecting (see RatesFragment.java -> row 51
     //this word instructs Dagger that this is injectable class and it is allowed to create a factory for him
     //we inject something into constructor - there is injection
-    @Inject RatesAdapter() {
+    @Inject RatesAdapter(PriceFormatter priceFormatter,
+                         ChangeFormatter changeFormatter) {
         super(new DiffUtil.ItemCallback<Coin>() {
             @Override
             public boolean areItemsTheSame(@NonNull Coin oldItem, @NonNull Coin newItem) {
@@ -39,6 +46,8 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
                 return Objects.equals(oldItem, newItem);
             }
         });
+        this.priceFormatter = priceFormatter;
+        this.changeFormatter = changeFormatter;
         setHasStableIds(true);
     }
 
@@ -57,10 +66,10 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Coin coin = getItem(position);
         holder.binding.symbol.setText(coin.symbol());
-        holder.binding.price.setText(NumberFormat
-                .getCurrencyInstance().format(coin.price()));
-        holder.binding.change.setText(String
-                .format(Locale.US, "%.2f%%", coin.change24h()));
+
+        holder.binding.price.setText(priceFormatter.format(coin.price()));
+        holder.binding.change.setText(changeFormatter.format(coin.change24h()));
+
         final Context context = holder.itemView.getContext();
         if (coin.change24h() >= 0) {
             holder.binding.change.setTextColor(ContextCompat.getColor(context, R.color.colorPositive));

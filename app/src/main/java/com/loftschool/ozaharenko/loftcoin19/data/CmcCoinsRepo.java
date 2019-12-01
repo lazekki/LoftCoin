@@ -24,9 +24,11 @@ class CmcCoinsRepo implements CoinsRepo {
         this.api = api;
     }
 
-    public void listings(@NonNull MutableLiveData<List<Coin>> coins, @NonNull MutableLiveData<Boolean> loading) {
+    public void listings(@NonNull MutableLiveData<List<Coin>> coins,
+                         @NonNull MutableLiveData<Boolean> loading,
+                         @NonNull Currency currency) {
         loading.setValue(true);
-        api.listings().enqueue(new Callback<Listings>() {
+        api.listings(currency.code()).enqueue(new Callback<Listings>() {
             @Override
             public void onResponse(Call<Listings> call, Response<Listings> response) {
                 loading.postValue(false);

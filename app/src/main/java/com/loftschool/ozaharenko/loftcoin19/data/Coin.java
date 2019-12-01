@@ -3,6 +3,7 @@ package com.loftschool.ozaharenko.loftcoin19.data;
 import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;
 
+import java.util.Iterator;
 import java.util.Map;
 
 @AutoValue
@@ -17,11 +18,19 @@ public abstract class Coin {
     abstract Map<String, AutoValue_Coin_Quote> quote();
 
     public double price() {
-        return quote().get("USD").price();
+        final Iterator<AutoValue_Coin_Quote> iterator = quote().values().iterator();
+        if (iterator.hasNext()) {
+            return iterator.next().price();
+        }
+        return 0d;
     }
 
     public double change24h() {
-        return quote().get("USD").change24h();
+        final Iterator<AutoValue_Coin_Quote> iterator = quote().values().iterator();
+        if (iterator.hasNext()) {
+            return iterator.next().change24h();
+        }
+        return 0d;
     }
 
     @AutoValue
