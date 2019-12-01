@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,8 +36,6 @@ import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
 
 public class RatesFragment extends Fragment {
 
-    @Inject CmcApi api; //component -> base(app)Component -> DataModule -> cmcApi()
-
     //we cannot inject into private fields, so we change 'private' to '@Inject'
     @Inject RatesAdapter adapter; //this is exactly injection into object. component -> RatesAdapter()
 
@@ -44,17 +43,30 @@ public class RatesFragment extends Fragment {
 
     private FragmentRatesBinding binding;
 
-    private RatesComponent component;
+    private RatesViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        component = DaggerRatesComponent.builder()
+        RatesComponent component = DaggerRatesComponent.builder()
                 .baseComponent(BaseComponent.get(requireContext()))
                 .fragment(this)
                 .build();
         component.inject(this); //example of injection
         navController = Navigation.findNavController(requireActivity(), R.id.main_host);
+        // data(repository) (<- view model can write to the data)-> view model -> ui
+        viewModel = new ViewModelProvider(this)
+                .get(RatesViewModel.class);
+
+        //LifecycleOwner - abstract object to work with lifecycle.
+
+        if (viewModel.isInitialized().compareAndSet(false, true)) {
+            component.inject(viewModel);
+        }
+
+        //provider - subscriber model implementation:
+        viewModel.getCoins().observe(this, adapter::submitList);
+        viewModel.observeCurrencyChange();
     }
 
     @Nullable
@@ -110,38 +122,72 @@ public class RatesFragment extends Fragment {
         binding.recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.recycler.setHasFixedSize(true);
         binding.recycler.swapAdapter(adapter, false);
-        binding.refresher.setOnRefreshListener(this::refresh);
-        refresh();
-    }
 
+        //Instead of:
+        //binding.refresher.setOnRefreshListener(this::refresh);
+        //we will use:
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
+/*
+        Using Alt + Enter, it is possible to reduce code above:
+
+        1) select '{' after -> and press Alt + Enter + 'replace with expression lambda'. Code will changed from
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            binding.refresher.setRefreshing((isLoading));
+        });
+
+        to:
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> binding.refresher.setRefreshing((isLoading)));
+
+        2) select 'setRefreshing' + Alt + Enter + replace 'lambda with method reference'. Code will changed from
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> binding.refresher.setRefreshing((isLoading)));
+
+        to
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
+
+        How do we know that this replacement is possible? Because these methods are methods with the same signature.
+ */
+
+ /*
+        Next, instead of using
+
+        refresh();
+
+        we will use:
+
+        (with replace lambda:
+
+        from:
+
+        binding.refresher.setOnRefreshListener(() -> {
+           viewModel.refresh();
+        });
+
+        to:
+
+        binding.refresher.setOnRefreshListener(() -> viewModel.refresh());
+
+        and with replace 'lambda with method reference'):
+
+        from:
+
+        binding.refresher.setOnRefreshListener(() -> viewModel.refresh());
+
+        to:
+ */
+        binding.refresher.setOnRefreshListener(viewModel::refresh);
+
+        //it is highly recommended to use method reference as mch as possible.
+
+    }
 
     @Override
     public void onDestroyView() {
         binding.recycler.swapAdapter(null, false);
         super.onDestroyView();
-    }
-
-    RatesComponent getComponent() {
-        return component;
-    }
-
-    private void refresh() {
-        binding.refresher.setRefreshing(true);
-        api.listings().enqueue(new Callback<Listings>() {
-            @Override
-            public void onResponse(Call<Listings> call, Response<Listings> response) {
-                binding.refresher.setRefreshing(false);
-                final Listings body = response.body();
-                if (body != null) {
-                    adapter.submitList(body.coins());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Listings> call, Throwable t) {
-                binding.refresher.setRefreshing(false);
-                Timber.d(t);
-            }
-        });
     }
 }

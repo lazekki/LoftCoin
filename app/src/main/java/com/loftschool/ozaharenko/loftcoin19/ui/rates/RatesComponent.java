@@ -19,4 +19,5 @@ abstract class RatesComponent {
 
     abstract void inject(RatesCurrencyDialog ratesCurrencyDialog);
 
+    abstract void inject(RatesViewModel viewModel);
 }

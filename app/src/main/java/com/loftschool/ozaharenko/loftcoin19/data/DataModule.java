@@ -63,4 +63,8 @@ public abstract class DataModule {
     @Binds
     abstract CurrencyRepo currencyRepo(DefaultCurrencyRepo impl);
 
+    @Binds
+    abstract CoinsRepo coinsRepo(CmcCoinsRepo impl);
+
+
 }
