@@ -18,10 +18,13 @@ import timber.log.Timber;
 class CmcCoinsRepo implements CoinsRepo {
 
     private final CmcApi api;
+    
+    private final CoinsDb db;
 
     @Inject
-    CmcCoinsRepo(CmcApi api) {
+    CmcCoinsRepo(CmcApi api, CoinsDb db) {
         this.api = api;
+        this.db = db;
     }
 
     public void listings(@NonNull MutableLiveData<List<Coin>> coins,

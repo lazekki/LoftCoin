@@ -1,5 +1,10 @@
 package com.loftschool.ozaharenko.loftcoin19.data;
 
+import android.content.Context;
+
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+
 import com.loftschool.ozaharenko.loftcoin19.BuildConfig;
 import com.squareup.moshi.Moshi;
 
@@ -52,6 +57,29 @@ public abstract class DataModule {
                 .baseUrl(BuildConfig.CMC_API_ENDPOINT)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    static CoinsDb coinsDb(Context context) {
+/*
+        There are 2 methods:
+        Room.inMemoryDatabaseBuilder()
+        AND
+        Room.databaseBuilder()
+
+        1st one is more preferable for DEBUG mode.
+        Next code creates builder, what will contain one method for DEBUG (database in memory)
+        and another one for Production build (database in the file)
+*/
+        final RoomDatabase.Builder<CoinsDb> builder;
+
+        if (BuildConfig.DEBUG) {
+            builder = Room.inMemoryDatabaseBuilder(context, CoinsDb.class);
+        } else {
+            builder = Room.databaseBuilder(context, CoinsDb.class, "coins.db");
+        }
+        return builder.build();
     }
 
     @Provides
