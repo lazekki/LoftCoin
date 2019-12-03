@@ -3,14 +3,17 @@ package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 import androidx.fragment.app.Fragment;
 
 import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
+import com.loftschool.ozaharenko.loftcoin19.vm.VmModule;
 
+import dagger.BindsInstance;
 import dagger.Component;
 
 @Component(modules = {
-    RatesModule.class
+    RatesModule.class,
+    VmModule.class
 }, dependencies = {
     BaseComponent.class,
-    Fragment.class
+    //Fragment.class
 })
 abstract class RatesComponent {
 
@@ -19,5 +22,12 @@ abstract class RatesComponent {
 
     abstract void inject(RatesCurrencyDialog ratesCurrencyDialog);
 
-    abstract void inject(RatesViewModel viewModel);
+    @Component.Factory
+    interface Factory {
+        RatesComponent create(
+                BaseComponent baseComponent,
+                @BindsInstance Fragment fragment
+        );
+    }
+
 }

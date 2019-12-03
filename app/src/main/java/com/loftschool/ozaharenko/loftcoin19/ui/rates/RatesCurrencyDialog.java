@@ -2,7 +2,6 @@ package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,17 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
-import com.loftschool.ozaharenko.loftcoin19.data.Currency;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
 import com.loftschool.ozaharenko.loftcoin19.databinding.DialogCurrencyBinding;
 import com.loftschool.ozaharenko.loftcoin19.widget.CurrencyAdapter;
 import com.loftschool.ozaharenko.loftcoin19.widget.OnItemClick;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public class RatesCurrencyDialog extends AppCompatDialogFragment {
 
@@ -38,10 +32,8 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerRatesComponent.builder()
-                .baseComponent(BaseComponent.get(requireContext()))
-                .fragment(this)
-                .build()
+        DaggerRatesComponent.factory()
+                .create(BaseComponent.get(requireContext()),this)
                 .inject(this);
         adapter.submitList(currencies.availableCurrencies());
     }

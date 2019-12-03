@@ -21,15 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.loftschool.ozaharenko.loftcoin19.BaseComponent;
 import com.loftschool.ozaharenko.loftcoin19.R;
-import com.loftschool.ozaharenko.loftcoin19.data.CmcApi;
-import com.loftschool.ozaharenko.loftcoin19.data.Listings;
 import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentRatesBinding;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
@@ -37,7 +32,39 @@ import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
 public class RatesFragment extends Fragment {
 
     //we cannot inject into private fields, so we change 'private' to '@Inject'
-    @Inject RatesAdapter adapter; //this is exactly injection into object. component -> RatesAdapter()
+    @Inject
+    RatesAdapter adapter; //this is exactly injection into object. component -> RatesAdapter()
+
+    //@Vm
+    @Inject
+    ViewModelProvider.Factory vmFactory;
+
+
+/*NOTES FROM LECTURE 9:
+
+    If we use such construction:
+
+    @Inject Provider<RatesAdapter> adapter;
+
+    as soon as we call Provider.get() method, inside of the method Dagger will call the
+    methods cascade, like component -> factory -> get()
+
+    If RatesAdapter has @Singleton annotation, call stack [factory -> get()] will be cached.
+    Next Provider.get() call will return the same instance, what was cached after first method' call.
+
+    If RatesAdapter doesn't have @Singleton annotation, Provider.get() call will call factory -> get()
+    every time, and new object will be created. It also can be not a Singleton, but any other scope of visibility.
+
+    If we use such construction:
+
+    @Inject Lazy<RatesAdapter> adapter;
+
+    Call of Lazy.get() will create new Lazy, and within this Lazy the object will be cached.
+    Next call of Lazy.get() returns the same object.
+
+    It will work only for concrete field, in example it is 'adapter' field.
+
+*/
 
     private NavController navController;
 
@@ -48,25 +75,18 @@ public class RatesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RatesComponent component = DaggerRatesComponent.builder()
-                .baseComponent(BaseComponent.get(requireContext()))
-                .fragment(this)
-                .build();
+        final RatesComponent component = DaggerRatesComponent.factory()
+                .create(BaseComponent.get(requireContext()),this);
+
         component.inject(this); //example of injection
         navController = Navigation.findNavController(requireActivity(), R.id.main_host);
         // data(repository) (<- view model can write to the data)-> view model -> ui
-        viewModel = new ViewModelProvider(this)
+        viewModel = new ViewModelProvider(this, vmFactory)
                 .get(RatesViewModel.class);
-
         //LifecycleOwner - abstract object to work with lifecycle.
-
-        if (viewModel.isInitialized().compareAndSet(false, true)) {
-            component.inject(viewModel);
-        }
 
         //provider - subscriber model implementation:
         viewModel.getCoins().observe(this, adapter::submitList);
-        viewModel.observeCurrencyChange();
     }
 
     @Nullable

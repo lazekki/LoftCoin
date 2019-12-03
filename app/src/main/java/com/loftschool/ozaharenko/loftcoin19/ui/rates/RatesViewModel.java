@@ -24,31 +24,33 @@ public class RatesViewModel extends ViewModel {
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
 
     private final AtomicBoolean initialized = new AtomicBoolean();
-
-    @Inject
-    CoinsRepo coinsRepo; // component -> base(app)Component -> DataModule -> cmcApi()
-
-    @Inject
-    CurrencyRepo currencyRepo;
+    private final CoinsRepo coinsRepo;
+    private final CurrencyRepo currencyRepo;
 
     private Observer<Currency> currencyObserver;
 
-    @NonNull
-    public AtomicBoolean isInitialized() {
-        return initialized;
+    //On @Inject there is call stack: component -> base(app)Component -> DataModule -> cmcApi():
+
+    @Inject
+    RatesViewModel(CoinsRepo coinsRepo, CurrencyRepo currencyRepo) {
+        this.coinsRepo = coinsRepo;
+        this.currencyRepo = currencyRepo;
+        observeCurrencyChange();
     }
 
     @NonNull
     LiveData<List<Coin>> getCoins() {
+
         return coins;
     }
 
     @NonNull
     LiveData<Boolean> isLoading() {
+
         return loading;
     }
 
-    final void observeCurrencyChange() {
+    private void observeCurrencyChange() {
         if (currencyObserver == null) {
             currencyObserver = currency -> refresh();
             currencyRepo.currency().observeForever(currencyObserver);
@@ -56,6 +58,7 @@ public class RatesViewModel extends ViewModel {
     }
 
     final void refresh() {
+
         coinsRepo.listings(coins, loading, currencyRepo.getCurrency());
     }
 
