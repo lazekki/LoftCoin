@@ -6,11 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-public abstract class Listings {
+abstract class Listings {
 
     abstract List<AutoValue_CmcCoin> data();
 
-    public List<Coin> coins() {
-        return Collections.unmodifiableList(data());
-    }
 }
