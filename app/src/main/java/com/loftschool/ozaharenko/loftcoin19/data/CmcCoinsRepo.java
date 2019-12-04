@@ -36,28 +36,6 @@ class CmcCoinsRepo implements CoinsRepo {
         coins = db.coins().fetchAll();
     }
 
-    public void listings(@NonNull MutableLiveData<List<Coin>> coins,
-                         @NonNull MutableLiveData<Boolean> loading,
-                         @NonNull Currency currency) {
-/*        loading.setValue(true);
-        api.listings(currency.code()).enqueue(new Callback<Listings>() {
-            @Override
-            public void onResponse(Call<Listings> call, Response<Listings> response) {
-                loading.postValue(false);
-                final Listings listings = response.body();
-                if (listings != null) {
-                    coins.postValue(listings.coins());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Listings> call, Throwable t) {
-                loading.postValue(false);
-                Timber.d(t);
-            }
-        });*/
-    }
-
     @NonNull
     @Override
     public LiveData<? extends List<? extends Coin>> listings(

@@ -20,13 +20,11 @@ import javax.inject.Inject;
 
 class RatesViewModel extends ViewModel {
 
+    private final MutableLiveData<Boolean> pullToRefresh = new MutableLiveData<>();
+
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
 
-    private final AtomicBoolean initialized = new AtomicBoolean();
-
     private final LiveData<List<Coin>> coins;
-
-    private final MutableLiveData<Boolean> pullToRefresh = new MutableLiveData<>();
 
     //On @Inject there is call stack: component -> base(app)Component -> DataModule -> cmcApi():
     @Inject
@@ -43,7 +41,8 @@ class RatesViewModel extends ViewModel {
         //Последним шагом кастуем список койнов к типу, который принимается адаптером.
 
         //PullToRefresh -> [*]Сurrency
-        LiveData<Currency> currency = Transformations.switchMap(pullToRefresh, r -> currencyRepo.currency());
+        final LiveData<Currency> currency = Transformations
+                .switchMap(pullToRefresh, r -> currencyRepo.currency());
 
         //[*]Сurrency -> [*]List<? extends Coin>
         final LiveData<? extends List<? extends Coin>> rawCoins = Transformations
@@ -66,12 +65,10 @@ class RatesViewModel extends ViewModel {
 
     @NonNull
     LiveData<Boolean> isLoading() {
-
         return loading;
     }
 
     final void refresh() {
           pullToRefresh.setValue(true);
     }
-
 }
