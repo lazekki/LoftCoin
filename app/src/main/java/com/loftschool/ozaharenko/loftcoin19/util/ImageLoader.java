@@ -10,9 +10,7 @@ public interface ImageLoader {
     ImageRequest load(@NonNull String uri);
 
     interface ImageRequest {
-
         void into(@NonNull ImageView view);
-
     }
 
 }

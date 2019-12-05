@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
@@ -14,10 +15,10 @@ import com.loftschool.ozaharenko.loftcoin19.R;
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.databinding.LiRateBinding;
 import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
+import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
+import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -28,13 +29,19 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
     private final ChangeFormatter changeFormatter;
 
+    private final LogoUrlFormatter logoFormatter;
+
+    private final ImageLoader imageLoader;
+
     private LayoutInflater inflater;
 
     //@Inject - requires for the component, what we are injecting (see RatesFragment.java -> row 51
     //this word instructs Dagger that this is injectable class and it is allowed to create a factory for him
     //we inject something into constructor - there is injection
     @Inject RatesAdapter(PriceFormatter priceFormatter,
-                         ChangeFormatter changeFormatter) {
+                         ChangeFormatter changeFormatter,
+                         LogoUrlFormatter logo,
+                         ImageLoader imageLoader) {
         super(new DiffUtil.ItemCallback<Coin>() {
             @Override
             public boolean areItemsTheSame(@NonNull Coin oldItem, @NonNull Coin newItem) {
@@ -48,6 +55,8 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
         });
         this.priceFormatter = priceFormatter;
         this.changeFormatter = changeFormatter;
+        this.logoFormatter = logo;
+        this.imageLoader = imageLoader;
         setHasStableIds(true);
     }
 
@@ -72,9 +81,21 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
         final Context context = holder.itemView.getContext();
         if (coin.change24h() >= 0) {
-            holder.binding.change.setTextColor(ContextCompat.getColor(context, R.color.colorPositive));
+            holder.binding.change.setTextColor(ContextCompat
+                    .getColor(context, R.color.colorPositive));
         } else if (coin.change24h() < 0) {
-            holder.binding.change.setTextColor(ContextCompat.getColor(context, R.color.colorNegative));
+            holder.binding.change.setTextColor(ContextCompat
+                    .getColor(context, R.color.colorNegative));
+        }
+
+        imageLoader.load(logoFormatter.format(coin.id())).into(holder.binding.logo);
+
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(ContextCompat
+                    .getColor(context, R.color.dark_three));
+        } else {
+            holder.itemView.setBackgroundColor(ContextCompat
+                    .getColor(context, R.color.dark_two));
         }
     }
 

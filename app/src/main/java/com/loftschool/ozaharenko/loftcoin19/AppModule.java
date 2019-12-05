@@ -4,8 +4,12 @@ package com.loftschool.ozaharenko.loftcoin19;
 import android.app.Application;
 import android.content.Context;
 
+import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
+import com.loftschool.ozaharenko.loftcoin19.util.PicassoImageLoader;
+
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
@@ -19,5 +23,8 @@ abstract class AppModule {
     static Context context(Application app) {
         return app.getApplicationContext();
     }
+
+    @Binds
+    abstract ImageLoader imageLoader(PicassoImageLoader impl);
 
 }

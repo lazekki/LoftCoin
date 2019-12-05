@@ -6,6 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.loftschool.ozaharenko.loftcoin19.BuildConfig;
+import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.squareup.moshi.Moshi;
 
 import javax.inject.Singleton;
@@ -94,5 +95,7 @@ public abstract class DataModule {
     @Binds
     abstract CoinsRepo coinsRepo(CmcCoinsRepo impl);
 
+    @Binds
+    abstract LogoUrlFormatter logoUrlFormatter(CmcLogoUrl impl);
 
 }

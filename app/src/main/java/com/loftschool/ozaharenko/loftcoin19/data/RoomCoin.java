@@ -11,7 +11,13 @@ import com.google.auto.value.AutoValue;
 abstract class RoomCoin implements Coin {
 
     @NonNull
-    static RoomCoin create(long id, String name, String symbol, double price, double change24h) {
+    static RoomCoin create(
+            long id,
+            String name,
+            String symbol,
+            double price,
+            double change24h
+    ) {
         return new AutoValue_RoomCoin(name, symbol, price, change24h, id);
     }
 
