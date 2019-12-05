@@ -41,29 +41,19 @@ public class RatesFragment extends Fragment {
 
 
 /*NOTES FROM LECTURE 9:
-
     If we use such construction:
-
     @Inject Provider<RatesAdapter> adapter;
-
     as soon as we call Provider.get() method, inside of the method Dagger will call the
     methods cascade, like component -> factory -> get()
-
     If RatesAdapter has @Singleton annotation, call stack [factory -> get()] will be cached.
     Next Provider.get() call will return the same instance, what was cached after first method' call.
-
     If RatesAdapter doesn't have @Singleton annotation, Provider.get() call will call factory -> get()
     every time, and new object will be created. It also can be not a Singleton, but any other scope of visibility.
-
     If we use such construction:
-
     @Inject Lazy<RatesAdapter> adapter;
-
     Call of Lazy.get() will create new Lazy, and within this Lazy the object will be cached.
     Next call of Lazy.get() returns the same object.
-
     It will work only for concrete field, in example it is 'adapter' field.
-
 */
 
     private NavController navController;
@@ -128,10 +118,10 @@ public class RatesFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.currency_selection_dialog_title)
-               .setItems(currencies_array, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
+                .setItems(currencies_array, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
         return builder.create();
     }
 
@@ -150,53 +140,33 @@ public class RatesFragment extends Fragment {
         viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
 /*
         Using Alt + Enter, it is possible to reduce code above:
-
         1) select '{' after -> and press Alt + Enter + 'replace with expression lambda'. Code will changed from
-
         viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
             binding.refresher.setRefreshing((isLoading));
         });
-
         to:
-
         viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> binding.refresher.setRefreshing((isLoading)));
-
         2) select 'setRefreshing' + Alt + Enter + replace 'lambda with method reference'. Code will changed from
-
         viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> binding.refresher.setRefreshing((isLoading)));
-
         to
-
         viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
-
         How do we know that this replacement is possible? Because these methods are methods with the same signature.
  */
 
  /*
         Next, instead of using
-
         refresh();
-
         we will use:
-
         (with replace lambda:
-
         from:
-
         binding.refresher.setOnRefreshListener(() -> {
            viewModel.refresh();
         });
-
         to:
-
         binding.refresher.setOnRefreshListener(() -> viewModel.refresh());
-
         and with replace 'lambda with method reference'):
-
         from:
-
         binding.refresher.setOnRefreshListener(() -> viewModel.refresh());
-
         to:
  */
         binding.refresher.setOnRefreshListener(viewModel::refresh);

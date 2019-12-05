@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
+import androidx.room.Query;
 
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
@@ -26,6 +27,9 @@ class RatesViewModel extends ViewModel {
 
     private final LiveData<List<Coin>> coins;
 
+    //private final LiveData<List<Coin>> ascSortedCoins;
+
+
     //On @Inject there is call stack: component -> base(app)Component -> DataModule -> cmcApi():
     @Inject
     RatesViewModel(CoinsRepo coinsRepo, CurrencyRepo currencyRepo) {
@@ -36,7 +40,8 @@ class RatesViewModel extends ViewModel {
         to implement it:
         */
 
-        //Для PullToRefresh по refresh (см. method refresh(), line 71) публикуем значение и это значение триггерит начало цепочки.
+        //Для PullToRefresh по refresh (см. method refresh(), line 71)
+        //публикуем значение и это значение триггерит начало цепочки.
         //После изменения валюты мы лезем в репозиторий и получаем список койнов.
         //Последним шагом кастуем список койнов к типу, который принимается адаптером.
 
@@ -55,6 +60,9 @@ class RatesViewModel extends ViewModel {
 
         //[*]List<? extends Coin> -> ][*]List<Coin>
         coins = Transformations.map(rawCoins, Collections::unmodifiableList);
+
+        //[*]List<Coin> -> List<ascSortedCoin>
+        //ascSortedCoins = Transformations.map(rawCoins, Collections::sort);
         refresh();
     }
 
@@ -62,6 +70,11 @@ class RatesViewModel extends ViewModel {
     LiveData<List<Coin>> getCoins() {
         return coins;
     }
+
+    /*@NonNull
+    LiveData<List<Coin>> getAscSortedCoins() {
+        return ascSortedCoins;
+    }*/
 
     @NonNull
     LiveData<Boolean> isLoading() {
@@ -71,4 +84,5 @@ class RatesViewModel extends ViewModel {
     final void refresh() {
           pullToRefresh.setValue(true);
     }
+
 }

@@ -14,7 +14,9 @@ abstract class CoinsDao {
     @Query("SELECT * FROM RoomCoin")
     abstract LiveData<List<RoomCoin>> fetchAll();
 
+    //@Query("SELECT * FROM RoomCoin ORDER BY price ASC")
+    //abstract LiveData<List<RoomCoin>> ascSortAll();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insertAll(List<RoomCoin> coins);
-
 }
