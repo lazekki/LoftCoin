@@ -58,11 +58,11 @@ class RatesViewModel extends ViewModel {
                     });
                 });
 
-        //[*]List<? extends Coin> -> ][*]List<Coin>
+        //[*]List<? extends Coin> -> [*]List<Coin>
         coins = Transformations.map(rawCoins, Collections::unmodifiableList);
 
         //[*]List<Coin> -> List<ascSortedCoin>
-        //ascSortedCoins = Transformations.map(rawCoins, Collections::sort);
+        //ascSortedCoins = Transformations.map(coins, );
         refresh();
     }
 
