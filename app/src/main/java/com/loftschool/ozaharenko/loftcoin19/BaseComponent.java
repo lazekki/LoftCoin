@@ -8,6 +8,8 @@ import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
+import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
+import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
 
 public interface BaseComponent {
@@ -30,4 +32,9 @@ public interface BaseComponent {
     PriceFormatter priceFormatter();
 
     ChangeFormatter changeFormatter();
+
+    LogoUrlFormatter logoUrlFormatter();
+
+    ImageLoader imageLoader();
+
 }
