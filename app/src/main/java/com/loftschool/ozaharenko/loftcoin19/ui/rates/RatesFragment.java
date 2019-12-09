@@ -116,7 +116,7 @@ public class RatesFragment extends Fragment {
                 navController.navigate(R.id.action_currency_dialog);
                 return true;
             case R.id.menu_sorting:
-                //to do something for menu_sorting
+                viewModel.selectNextSortingOrder();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
