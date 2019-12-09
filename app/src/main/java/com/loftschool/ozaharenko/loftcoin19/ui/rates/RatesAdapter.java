@@ -18,6 +18,7 @@ import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
 import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
+import com.loftschool.ozaharenko.loftcoin19.widget.CircleOutlineProvider;
 
 import java.util.Objects;
 
@@ -112,6 +113,8 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
         ViewHolder(@NonNull LiRateBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.logo.setOutlineProvider(new CircleOutlineProvider());
+            binding.logo.setClipToOutline(true);
         }
     }
 }

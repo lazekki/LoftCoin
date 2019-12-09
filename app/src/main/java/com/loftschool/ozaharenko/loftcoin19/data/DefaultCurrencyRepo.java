@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.loftschool.ozaharenko.loftcoin19.R;
@@ -16,6 +15,10 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 @Singleton
 class DefaultCurrencyRepo implements CurrencyRepo {
 
@@ -25,12 +28,9 @@ class DefaultCurrencyRepo implements CurrencyRepo {
 
     private final SharedPreferences currencies;
 
-    private final LiveData<Currency> currency;
-
     @Inject DefaultCurrencyRepo(Context context) {
         this.context = context;
         currencies = context.getSharedPreferences("currencies", Context.MODE_PRIVATE);
-        currency = new CurrencyLiveData(this);
     }
 
     @NonNull
@@ -45,9 +45,10 @@ class DefaultCurrencyRepo implements CurrencyRepo {
 
     @NonNull
     @Override
-    public LiveData<Currency> currency() {
-        return currency;
+    public Observable<Currency> currency() {
+        return Observable.create(new RxCurrency(this));
     }
+
 
     @Override
     public void setCurrency(@NonNull Currency currency) {
@@ -64,6 +65,25 @@ class DefaultCurrencyRepo implements CurrencyRepo {
             }
         }
         throw new IllegalArgumentException("Unknown currency.");
+    }
+
+    private static class RxCurrency implements ObservableOnSubscribe<Currency> {
+
+        private final DefaultCurrencyRepo repo;
+
+        RxCurrency(DefaultCurrencyRepo repo) {
+            this.repo = repo;
+        }
+
+        @Override
+        public void subscribe(ObservableEmitter<Currency> emitter) throws Exception {
+            final SharedPreferences.OnSharedPreferenceChangeListener listener = (prefs, key) -> {
+                emitter.onNext(repo.getCurrency());
+            };
+            emitter.setCancellable(() -> repo.currencies.unregisterOnSharedPreferenceChangeListener(listener));
+            repo.currencies.registerOnSharedPreferenceChangeListener(listener);
+            emitter.onNext(repo.getCurrency());
+        }
     }
 
     private class CurrencyLiveData extends MutableLiveData<Currency>

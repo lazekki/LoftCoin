@@ -32,8 +32,9 @@ public class RatesCurrencyDialog extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerRatesComponent.factory()
-                .create(BaseComponent.get(requireContext()),this)
+        DaggerRatesComponent.builder()
+                .baseComponent(BaseComponent.get(requireContext()))
+                .build()
                 .inject(this);
         adapter.submitList(currencies.availableCurrencies());
     }

@@ -8,14 +8,19 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 @Dao
 abstract class CoinsDao {
 
     @Query("SELECT * FROM RoomCoin")
-    abstract LiveData<List<RoomCoin>> fetchAll();
+    abstract Observable<List<RoomCoin>> fetchAll();
 
-    //@Query("SELECT * FROM RoomCoin ORDER BY price ASC")
-    //abstract LiveData<List<RoomCoin>> ascSortAll();
+    @Query("SELECT * FROM RoomCoin ORDER BY price ASC")
+    abstract Observable<List<RoomCoin>> fetchAllSortedByPriceAsc();
+
+    @Query("SELECT * FROM RoomCoin ORDER BY price DESC")
+    abstract Observable<List<RoomCoin>> fetchAllSortedByPriceDesc();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insertAll(List<RoomCoin> coins);
