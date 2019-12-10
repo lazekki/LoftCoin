@@ -55,7 +55,6 @@ class FirestoreWalletsRepo implements WalletsRepo {
                     document.getDouble("balance")
                 ))
                 .toList()
-        )
-        .switchMap(docs -> Observable.empty());
+        );
     }
 }
