@@ -1,88 +1,100 @@
 package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
-import androidx.room.Query;
 
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
-import com.loftschool.ozaharenko.loftcoin19.data.Currency;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.Subject;
+
 class RatesViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> pullToRefresh = new MutableLiveData<>();
+    private final Subject<AtomicBoolean> pullToRefresh = BehaviorSubject
+            .createDefault(new AtomicBoolean(true));
 
-    private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
+    private final Subject<CoinsRepo.SortBy> sortBy = BehaviorSubject
+            .createDefault(CoinsRepo.SortBy.RANK);
 
-    private final LiveData<List<Coin>> coins;
+    private final Subject<Boolean> loading = BehaviorSubject.create();
 
-    //private final LiveData<List<Coin>> ascSortedCoins;
+    private final Queue<CoinsRepo.SortBy> sortByQueue = new ArrayDeque<>();
 
+    private final Observable<List<Coin>> coins;
 
-    //On @Inject there is call stack: component -> base(app)Component -> DataModule -> cmcApi():
+    // Pull2Refresh -> [*]Currency -> [*]List<? extends Coin> -> [*]List<Coin>
     @Inject
     RatesViewModel(CoinsRepo coinsRepo, CurrencyRepo currencyRepo) {
 
-        /*'источник истины' :
-        PullToRefresh -> [*]Сurrency -> [*]List<? extends Coin> -> ][*]List<Coin>
-           все эти элементы, каждый по своему, служат источником истины, и могут быть объединены в цепочку.
-        to implement it:
-        */
+        // Upstream
+        // Downstream
+        coins = pullToRefresh //Upstream for all rest chain:
+                .observeOn(Schedulers.io())
 
-        //Для PullToRefresh по refresh (см. method refresh(), line 71)
-        //публикуем значение и это значение триггерит начало цепочки.
-        //После изменения валюты мы лезем в репозиторий и получаем список койнов.
-        //Последним шагом кастуем список койнов к типу, который принимается адаптером.
+                //Downstream
+                .switchMap(refresh -> currencyRepo.currency()
+                        .observeOn(Schedulers.io())
+                        .doOnNext(c -> refresh.set(true))
+                        .doOnNext(c -> loading.onNext(true))
+                        .switchMap(currency -> sortBy
+                                .observeOn(Schedulers.io())
+                                .map(sortingOrder -> CoinsRepo.Query.create(
+                                        currency,
+                                        sortingOrder,
+                                        refresh.getAndSet(false)
+                                ))
+                        )
+                )
+                .switchMap(coinsRepo::listings)
+                .<List<Coin>>map(Collections::unmodifiableList)
+                .doOnNext(c -> loading.onNext(false))
+                .doOnError(e -> loading.onNext(false))
+                .replay(1)
+                .autoConnect()
 
-        //PullToRefresh -> [*]Сurrency
-        final LiveData<Currency> currency = Transformations
-                .switchMap(pullToRefresh, r -> currencyRepo.currency());
+                //Upstream:
+                .subscribeOn(Schedulers.io());
 
-        //[*]Сurrency -> [*]List<? extends Coin>
-        final LiveData<? extends List<? extends Coin>> rawCoins = Transformations
-                .switchMap(currency, c -> {
-                    loading.postValue(true);
-                    return coinsRepo.listings(c, () -> {
-                        loading.postValue(false);
-                    });
-                });
+         Collections.addAll(sortByQueue,
+            CoinsRepo.SortBy.RANK,
+            CoinsRepo.SortBy.PRICE_DESC,
+            CoinsRepo.SortBy.PRICE_ASC
+        );
 
-        //[*]List<? extends Coin> -> [*]List<Coin>
-        coins = Transformations.map(rawCoins, Collections::unmodifiableList);
-
-        //[*]List<Coin> -> List<ascSortedCoin>
-        //ascSortedCoins = Transformations.map(coins, );
-        refresh();
     }
 
     @NonNull
-    LiveData<List<Coin>> getCoins() {
-        return coins;
+    Observable<List<Coin>> getCoins() {
+        return coins.observeOn(AndroidSchedulers.mainThread());
     }
 
-    /*@NonNull
-    LiveData<List<Coin>> getAscSortedCoins() {
-        return ascSortedCoins;
-    }*/
-
     @NonNull
-    LiveData<Boolean> isLoading() {
-        return loading;
+    Observable<Boolean> isLoading() {
+        return loading.observeOn(AndroidSchedulers.mainThread());
     }
 
     final void refresh() {
-          pullToRefresh.setValue(true);
+        pullToRefresh.onNext(new AtomicBoolean(true));
+    }
+
+    final void selectNextSortingOrder() {
+        // RANK -> PRICE_DESC -> PRICE_ASC
+        final CoinsRepo.SortBy sort = sortByQueue.poll(); // PRICE_DESC -> PRICE_ASC
+        sortBy.onNext(sort);
+        sortByQueue.offer(sort); // PRICE_DESC -> PRICE_ASC -> RANK
     }
 
 }

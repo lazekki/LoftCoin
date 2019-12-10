@@ -1,15 +1,16 @@
 package com.loftschool.ozaharenko.loftcoin19.ui.rates;
 
+import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentRatesBinding;
 
 import javax.inject.Inject;
 
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 import static com.loftschool.ozaharenko.loftcoin19.R.array.currencies_array;
@@ -62,11 +64,15 @@ public class RatesFragment extends Fragment {
 
     private RatesViewModel viewModel;
 
+    private final CompositeDisposable fmtDisposable = new CompositeDisposable();
+    private final CompositeDisposable viewDisposable = new CompositeDisposable();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final RatesComponent component = DaggerRatesComponent.factory()
-                .create(BaseComponent.get(requireContext()),this);
+        final RatesComponent component = DaggerRatesComponent.builder()
+                .baseComponent(BaseComponent.get(requireContext())).
+                build();
 
         component.inject(this); //example of injection
         navController = Navigation.findNavController(requireActivity(), R.id.main_host);
@@ -76,7 +82,11 @@ public class RatesFragment extends Fragment {
         //LifecycleOwner - abstract object to work with lifecycle.
 
         //provider - subscriber model implementation:
-        viewModel.getCoins().observe(this, adapter::submitList);
+        fmtDisposable.add(viewModel.getCoins().subscribe(
+                adapter::submitList,
+                e -> Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_SHORT).show()
+        ));
+        //viewModel.getCoins().observe(this, adapter::submitList);
     }
 
     @Nullable
@@ -106,7 +116,7 @@ public class RatesFragment extends Fragment {
                 navController.navigate(R.id.action_currency_dialog);
                 return true;
             case R.id.menu_sorting:
-                //to do something for menu_sorting
+                viewModel.selectNextSortingOrder();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -132,12 +142,14 @@ public class RatesFragment extends Fragment {
         binding.recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.recycler.setHasFixedSize(true);
         binding.recycler.swapAdapter(adapter, false);
+        viewDisposable.add(viewModel.isLoading().subscribe(binding.refresher::setRefreshing));
+        binding.refresher.setOnRefreshListener(viewModel::refresh);
 
         //Instead of:
         //binding.refresher.setOnRefreshListener(this::refresh);
         //we will use:
 
-        viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
+        //viewModel.isLoading().observe(getViewLifecycleOwner(), binding.refresher::setRefreshing);
 /*
         Using Alt + Enter, it is possible to reduce code above:
         1) select '{' after -> and press Alt + Enter + 'replace with expression lambda'. Code will changed from
@@ -169,7 +181,6 @@ public class RatesFragment extends Fragment {
         binding.refresher.setOnRefreshListener(() -> viewModel.refresh());
         to:
  */
-        binding.refresher.setOnRefreshListener(viewModel::refresh);
 
         //it is highly recommended to use method reference as mch as possible.
 
@@ -177,7 +188,14 @@ public class RatesFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        viewDisposable.clear();
         binding.recycler.swapAdapter(null, false);
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        fmtDisposable.clear();
+        super.onDestroy();
     }
 }

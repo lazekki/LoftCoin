@@ -25,7 +25,10 @@
         </activity>
 
         <activity android:name=".ui.welcome.WelcomeActivity"/>
-        <activity android:name=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|uiMode|screenSize|screenLayout"
+            android:windowSoftInputMode="adjustPan"/>
 
     </application>
 
