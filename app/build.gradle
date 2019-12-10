@@ -91,3 +91,5 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore:21.3.0"
     implementation "com.google.firebase:firebase-messaging:20.0.1"
 }
+
+apply plugin: 'com.google.gms.google-services'

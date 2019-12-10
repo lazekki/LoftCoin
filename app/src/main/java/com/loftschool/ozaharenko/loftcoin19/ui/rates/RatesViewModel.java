@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.loftschool.ozaharenko.loftcoin19.data.Coin;
 import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
+import com.loftschool.ozaharenko.loftcoin19.databinding.FragmentRatesBinding;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -68,10 +69,10 @@ class RatesViewModel extends ViewModel {
                 //Upstream:
                 .subscribeOn(Schedulers.io());
 
-         Collections.addAll(sortByQueue,
-            CoinsRepo.SortBy.RANK,
-            CoinsRepo.SortBy.PRICE_DESC,
-            CoinsRepo.SortBy.PRICE_ASC
+        Collections.addAll(sortByQueue,
+                CoinsRepo.SortBy.RANK,
+                CoinsRepo.SortBy.PRICE_DESC,
+                CoinsRepo.SortBy.PRICE_ASC
         );
 
     }

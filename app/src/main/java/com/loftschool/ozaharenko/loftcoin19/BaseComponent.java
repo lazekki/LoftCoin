@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.loftschool.ozaharenko.loftcoin19.data.CoinsRepo;
 import com.loftschool.ozaharenko.loftcoin19.data.CurrencyRepo;
+import com.loftschool.ozaharenko.loftcoin19.data.WalletsRepo;
 import com.loftschool.ozaharenko.loftcoin19.prefs.Settings;
 import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
@@ -28,6 +29,10 @@ public interface BaseComponent {
     CurrencyRepo currencyRepo();
 
     CoinsRepo coinsRepo();
+
+    WalletsRepo walletsRepo();
+
+    //PriceParser priceParser();
 
     PriceFormatter priceFormatter();
 
