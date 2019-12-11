@@ -16,9 +16,9 @@ abstract class RoomCoin implements Coin {
             String name,
             String symbol,
             double price,
-            double change24h
-    ) {
-        return new AutoValue_RoomCoin(name, symbol, price, change24h, id);
+            double change24h,
+            int rank) {
+        return new AutoValue_RoomCoin(name, symbol, price, change24h, rank, id);
     }
 
     @Override

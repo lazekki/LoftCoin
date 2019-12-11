@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Singleton
 class CmcCoinsRepo implements CoinsRepo {
@@ -36,7 +37,8 @@ class CmcCoinsRepo implements CoinsRepo {
                         cmcCoin.name(),
                         cmcCoin.symbol(),
                         cmcCoin.price(),
-                        cmcCoin.change24h()
+                        cmcCoin.change24h(),
+                        cmcCoin.rank()
                 ))
                 .toList().toObservable()
                 .doOnNext(db.coins()::insertAll)
@@ -44,14 +46,41 @@ class CmcCoinsRepo implements CoinsRepo {
                 .switchIfEmpty(coins -> fetchFromDb(query));    }
 
     @NonNull
+    @Override
+    public Observable<? extends List<? extends Coin>> top(@NonNull Currency currency, int limit) {
+        return db.coins()
+            .fetchAllSortedByRank(limit)
+            .switchMap(coins -> {
+                if (coins.isEmpty()) {
+                    return listings(Query.create(currency, SortBy.RANK,true, limit));
+                } else {
+                    return Observable.just(coins);
+                }
+            });
+    }
+
+    @NonNull
+    @Override
+    public Single<? extends Coin> coin(Currency currency, Long id) {
+        return db.coins().fetchOne(id)
+                .onErrorResumeNext(e -> listings(Query
+                        .create(currency,
+                                SortBy.RANK,
+                                true))
+                        .switchMapSingle(coins -> db.coins().fetchOne(id))
+                        .firstOrError()
+                );
+    }
+
+    @NonNull
     private Observable<? extends List<? extends Coin>> fetchFromDb(@NonNull Query query) {
         switch (query.sortBy()) {
             case PRICE_ASC:
-                return db.coins().fetchAllSortedByPriceAsc();
+                return db.coins().fetchAllSortedByPriceAsc(query.limit());
             case PRICE_DESC:
-                return db.coins().fetchAllSortedByPriceDesc();
+                return db.coins().fetchAllSortedByPriceDesc(query.limit());
             default:
-                return db.coins().fetchAll();
+                return db.coins().fetchAllSortedByRank(query.limit());
         }
     }
 

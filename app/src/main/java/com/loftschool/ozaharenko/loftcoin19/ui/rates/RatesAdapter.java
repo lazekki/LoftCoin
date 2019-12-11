@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
@@ -20,6 +19,7 @@ import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
 import com.loftschool.ozaharenko.loftcoin19.widget.CircleOutlineProvider;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
     //we inject something into constructor - there is injection
     @Inject RatesAdapter(PriceFormatter priceFormatter,
                          ChangeFormatter changeFormatter,
-                         LogoUrlFormatter logo,
+                         LogoUrlFormatter logoFormatter,
                          ImageLoader imageLoader) {
         super(new DiffUtil.ItemCallback<Coin>() {
             @Override
@@ -53,10 +53,16 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
             public boolean areContentsTheSame(@NonNull Coin oldItem, @NonNull Coin newItem) {
                 return Objects.equals(oldItem, newItem);
             }
+
+            @Override
+            public Object getChangePayload(@NonNull Coin oldItem, @NonNull Coin newItem) {
+                return newItem;
+            }
+
         });
         this.priceFormatter = priceFormatter;
         this.changeFormatter = changeFormatter;
-        this.logoFormatter = logo;
+        this.logoFormatter = logoFormatter;
         this.imageLoader = imageLoader;
         setHasStableIds(true);
     }
@@ -76,21 +82,9 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Coin coin = getItem(position);
         holder.binding.symbol.setText(coin.symbol());
-
-        holder.binding.price.setText(priceFormatter.format(coin.price()));
-        holder.binding.change.setText(changeFormatter.format(coin.change24h()));
-
+        bindPriceAndChange(holder, coin);
         final Context context = holder.itemView.getContext();
-        if (coin.change24h() >= 0) {
-            holder.binding.change.setTextColor(ContextCompat
-                    .getColor(context, R.color.colorPositive));
-        } else if (coin.change24h() < 0) {
-            holder.binding.change.setTextColor(ContextCompat
-                    .getColor(context, R.color.colorNegative));
-        }
-
         imageLoader.load(logoFormatter.format(coin.id())).into(holder.binding.logo);
-
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat
                     .getColor(context, R.color.dark_three));
@@ -101,9 +95,32 @@ class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
     }
 
     @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            final Coin coin = (Coin) payloads.get(0);
+            bindPriceAndChange(holder, coin);
+        }
+    }
+
+    @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         inflater = LayoutInflater.from(recyclerView.getContext());
+    }
+
+    private void bindPriceAndChange(@NonNull ViewHolder holder, @NonNull Coin coin) {
+        holder.binding.price.setText(priceFormatter.format(coin.price()));
+        holder.binding.change.setText(changeFormatter.format(coin.change24h()));
+        final Context context = holder.itemView.getContext();
+        if (coin.change24h() >= 0) {
+            holder.binding.change.setTextColor(ContextCompat
+                    .getColor(context, R.color.colorPositive));
+        } else {
+            holder.binding.change.setTextColor(ContextCompat
+                    .getColor(context, R.color.colorNegative));
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

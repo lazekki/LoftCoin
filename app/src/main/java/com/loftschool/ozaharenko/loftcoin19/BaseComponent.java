@@ -12,6 +12,7 @@ import com.loftschool.ozaharenko.loftcoin19.util.ChangeFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.ImageLoader;
 import com.loftschool.ozaharenko.loftcoin19.util.LogoUrlFormatter;
 import com.loftschool.ozaharenko.loftcoin19.util.PriceFormatter;
+import com.loftschool.ozaharenko.loftcoin19.util.PriceParser;
 
 public interface BaseComponent {
 
@@ -32,7 +33,7 @@ public interface BaseComponent {
 
     WalletsRepo walletsRepo();
 
-    //PriceParser priceParser();
+    PriceParser priceParser();
 
     PriceFormatter priceFormatter();
 

@@ -8,13 +8,13 @@ import com.google.auto.value.AutoValue;
 abstract public class Wallet {
 
     @NonNull
-    static Wallet create(String id, Long coinId, Double balance) {
-        return new AutoValue_Wallet(id, coinId, balance);
+    static Wallet create(String id, Coin coin, Double balance) {
+        return new AutoValue_Wallet(id, coin, balance);
     }
 
     public abstract String id();
 
-    public abstract long coinId();
+    public abstract Coin coin();
 
     public abstract double balance();
 
