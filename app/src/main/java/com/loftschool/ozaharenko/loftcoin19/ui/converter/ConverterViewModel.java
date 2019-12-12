@@ -91,16 +91,19 @@ class ConverterViewModel extends ViewModel {
 
     @NonNull
     Observable<List<Coin>> topCoins() {
+
         return topCoins.observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull
     Observable<Coin> fromCoin() {
+
         return fromCoin.observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull
     Observable<Coin> toCoin() {
+
         return toCoin.observeOn(AndroidSchedulers.mainThread());
     }
 
