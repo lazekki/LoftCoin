@@ -5,6 +5,7 @@ import io.reactivex.Observable;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface CurrencyRepo {
 
@@ -13,6 +14,9 @@ public interface CurrencyRepo {
 
     @NonNull
     Currency getCurrency();
+
+    @NonNull
+    Locale getLocale();
 
     void setCurrency(@NonNull Currency currency);
 

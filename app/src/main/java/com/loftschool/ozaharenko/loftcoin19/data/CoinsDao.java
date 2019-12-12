@@ -1,5 +1,6 @@
 package com.loftschool.ozaharenko.loftcoin19.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -27,6 +28,9 @@ abstract class CoinsDao {
 
     @Query("SELECT * FROM RoomCoin ORDER BY price DESC LIMIT :limit")
     abstract Observable<List<RoomCoin>> fetchAllSortedByPriceDesc(int limit);
+
+    @Query("SELECT * FROM RoomCoin WHERE id NOT IN(:ids) ORDER BY rank ASC LIMIT 1")
+    abstract Single<RoomCoin> nextCoinWithIdNotIn(@NonNull List<Long> ids);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insertAll(List<RoomCoin> coins);

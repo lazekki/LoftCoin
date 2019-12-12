@@ -9,7 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.loftschool.ozaharenko.loftcoin19.R;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -22,13 +25,22 @@ import io.reactivex.ObservableOnSubscribe;
 @Singleton
 class DefaultCurrencyRepo implements CurrencyRepo {
 
+    private static final Map<String, Locale> LOCALES = new HashMap<>();
+
+    static {
+        LOCALES.put("USD", Locale.US);
+        LOCALES.put("EUR", Locale.GERMANY);
+        LOCALES.put("RUB", new Locale("ru", "RU"));
+    }
+
     private static final String CURRENCY = "currency";
 
     private final Context context;
 
     private final SharedPreferences currencies;
 
-    @Inject DefaultCurrencyRepo(Context context) {
+    @Inject
+    DefaultCurrencyRepo(Context context) {
         this.context = context;
         currencies = context.getSharedPreferences("currencies", Context.MODE_PRIVATE);
     }
@@ -49,7 +61,6 @@ class DefaultCurrencyRepo implements CurrencyRepo {
         return Observable.create(new RxCurrency(this));
     }
 
-
     @Override
     public void setCurrency(@NonNull Currency currency) {
         currencies.edit().putString(CURRENCY, currency.code()).apply();
@@ -64,7 +75,14 @@ class DefaultCurrencyRepo implements CurrencyRepo {
                 return currency;
             }
         }
-        throw new IllegalArgumentException("Unknown currency.");
+        throw new IllegalArgumentException("Unknown currency");
+    }
+
+    @NonNull
+    @Override
+    public Locale getLocale() {
+        final Locale locale = LOCALES.get(getCurrency().code());
+        return locale == null ? Locale.US : locale;
     }
 
     private static class RxCurrency implements ObservableOnSubscribe<Currency> {
@@ -84,10 +102,11 @@ class DefaultCurrencyRepo implements CurrencyRepo {
             repo.currencies.registerOnSharedPreferenceChangeListener(listener);
             emitter.onNext(repo.getCurrency());
         }
+
     }
 
-    private class CurrencyLiveData extends MutableLiveData<Currency>
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static class CurrencyLiveData extends MutableLiveData<Currency>
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private final DefaultCurrencyRepo repo;
 
@@ -100,7 +119,6 @@ class DefaultCurrencyRepo implements CurrencyRepo {
             postValue(repo.getCurrency());
         }
 
-
         @Override
         protected void onActive() {
             repo.currencies.registerOnSharedPreferenceChangeListener(this);
@@ -111,5 +129,7 @@ class DefaultCurrencyRepo implements CurrencyRepo {
         protected void onInactive() {
             repo.currencies.unregisterOnSharedPreferenceChangeListener(this);
         }
+
     }
+
 }

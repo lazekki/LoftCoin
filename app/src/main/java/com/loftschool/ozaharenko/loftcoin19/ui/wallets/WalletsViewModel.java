@@ -22,10 +22,12 @@ import io.reactivex.subjects.Subject;
 
 class WalletsViewModel extends ViewModel {
 
-    private final Subject<Integer> walletPosition = BehaviorSubject.createDefault(0); // adapter position
+    private final Subject<Integer> walletPosition = BehaviorSubject.createDefault(0); // adapter position, 0 by default, element number 0 from the list
 
     private final WalletsRepo walletsRepo;
+
     private final CurrencyRepo currencyRepo;
+
     private final CoinsRepo coinsRepo;
 
     private final Observable<List<Wallet>> wallets;
@@ -58,6 +60,7 @@ class WalletsViewModel extends ViewModel {
 
     @NonNull
     Observable<List<Wallet>> wallets() {
+
         return wallets.observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -84,6 +87,7 @@ class WalletsViewModel extends ViewModel {
     }
 
     void selectWallet(int position) {
+
         walletPosition.onNext(position);
     }
 }

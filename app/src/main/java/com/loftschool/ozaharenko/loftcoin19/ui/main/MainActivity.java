@@ -1,7 +1,6 @@
 package com.loftschool.ozaharenko.loftcoin19.ui.main;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
