@@ -26,10 +26,13 @@ import io.reactivex.subjects.Subject;
 
 class ConverterViewModel extends ViewModel {
 
+    //next 4 Subjects - come from UI, screen Converter.
+    //these 2 Subjects we select a coins from list:
     private final Subject<Integer> fromPosition = BehaviorSubject.createDefault(0); // selected POSITION in adapter
 
     private final Subject<Integer> toPosition = BehaviorSubject.createDefault(1);   // selected POSITION in adapter
 
+    //these 2 Subjects we enter as a numbers into fields:
     private final Subject<String> fromValue = BehaviorSubject.create(); // text in FROM field
 
     private final Subject<String> toValue = BehaviorSubject.create();   // text in TO field
@@ -52,6 +55,20 @@ class ConverterViewModel extends ViewModel {
         this.priceFormatter = priceFormatter;
         this.priceParser = priceParser;
 
+        //from [*] -> currency -> [*]coins -> [*]position -> [*]coin
+        //to   [*] -> currency -> [*]coins -> [*]position -> [*]coin
+
+        //distinct:             return 1 2 3 4 from 1 1 2 3 2 3 4
+        //distinctUntilChanged: return 1 from 1 1 1
+        //distinctUntilChanged: return 1 2 from 1 1 2
+        //distinctUntilChanged: return 1 2 1 from 1 2 1
+        //пока в цепочке чисел идут одинаковые, срабатывает distinct.
+        //как только появляется новое число, случается событие untilChanged, и это число попадает в цепочку как новое.
+        //если следующее число будет снова другим, не таким как предыдущее, это снова триггерит событие untilChanged, и это число так же
+        //попадает в итоговую цепочку как новое. По факту, distinctUntilChanged фильтрует цепочку, убирая повторяющиеся
+        //значения из подцепочек одинаковых элементов.
+
+        //from [*] -> currency -> [*]coins
         topCoins = currencyRepo.currency()
                 .switchMap(currency -> coinsRepo.top(currency, 3))
                 .<List<Coin>>map(Collections::unmodifiableList)
@@ -60,6 +77,7 @@ class ConverterViewModel extends ViewModel {
                 .autoConnect()
                 .subscribeOn(Schedulers.io());
 
+        //from [*]coins -> [*]position -> [*]coin
         fromCoin = topCoins
                 .switchMap(coins -> fromPosition
                         .observeOn(Schedulers.computation())
@@ -69,6 +87,7 @@ class ConverterViewModel extends ViewModel {
                 .autoConnect()
                 .subscribeOn(Schedulers.computation());
 
+        //to [*]coins -> [*]position -> [*]coin
         toCoin = topCoins
                 .switchMap(coins -> toPosition
                         .observeOn(Schedulers.computation())
@@ -78,10 +97,13 @@ class ConverterViewModel extends ViewModel {
                 .autoConnect()
                 .subscribeOn(Schedulers.computation());
 
+        //multiplier to calculate
+        //[*]fromCoin -> [*]toCoin -> [*]factor
+        //[*]currency -> [*]coins -> [*]position -> [*]coin -> [*]factor
         factor = fromCoin
-                .observeOn(Schedulers.computation())
+                //.observeOn(Schedulers.computation())
                 .switchMap(fc -> toCoin
-                        .observeOn(Schedulers.computation())
+                        //.observeOn(Schedulers.computation())
                         .map(tc -> fc.price() / tc.price())
                 )
                 .replay(1)
@@ -109,6 +131,7 @@ class ConverterViewModel extends ViewModel {
 
     @NonNull
     Observable<String> fromValue() {
+        //[*]currency -> [*]coins -> [*]position -> [*]coin -> [*]factor -> [*]toValue -> fromValue
         return toValue
                 .compose(parseValue())
                 .switchMap(value -> factor.map(f -> value / f))
@@ -119,13 +142,22 @@ class ConverterViewModel extends ViewModel {
 
     @NonNull
     Observable<String> toValue() {
+        //[*]currency -> [*]coins -> [*]position -> [*]coin -> [*]factor -> [*]fromValue -> toValue
         return fromValue
+
+                //.compose(parseValue()) - decorator, is the same as:
+                //=
+                //.distinctUntilChanged()
+                //.map(text -> priceParser.parse(text))
+
                 .compose(parseValue())
                 .switchMap(value -> factor.map(f -> value * f))
                 .compose(formatValue())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    //next 4 methods - to refresh data inside of a viewModel:
 
     final void fromCoin(int position) {
         fromPosition.onNext(position);
@@ -145,6 +177,18 @@ class ConverterViewModel extends ViewModel {
 
     @NonNull
     private ObservableTransformer<String, Double> parseValue() {
+        /*
+        return upstream -> upstream
+                .distinctUntilChanged()
+                .map(priceParser::parse);
+        =
+        return new ObservableTransformer<String, Double>() {
+            @Override
+            public ObservableSource<Double> apply(Observable<String> upstream) {
+                return upstream.distinctUnitlChanged().map(text -> priceParser.parse(text));
+            }
+
+        */
         return upstream -> upstream
                 .distinctUntilChanged()
                 .map(priceParser::parse);

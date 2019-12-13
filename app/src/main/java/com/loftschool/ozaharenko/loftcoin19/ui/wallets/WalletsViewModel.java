@@ -40,18 +40,20 @@ class WalletsViewModel extends ViewModel {
         this.currencyRepo = currencyRepo;
         this.coinsRepo = coinsRepo;
 
+        //[*]currency -> [*]wallets
         wallets = currencyRepo.currency()
                 .switchMap(walletsRepo::wallets)
                 .replay(1)
                 .autoConnect()
                 .subscribeOn(Schedulers.io());
 
+        //[*]wallets -> [*]position -> [*]transactions
         transactions = wallets
                 .filter(listOfWallets -> !listOfWallets.isEmpty())
-                .switchMap(w -> walletPosition
+                .switchMap(listOfWallets -> walletPosition
                         .observeOn(Schedulers.io())
                         .distinctUntilChanged()
-                        .map(w::get)
+                        .map(listOfWallets::get)
                 )
                 .switchMap(walletsRepo::transactions)
                 .replay(1)
@@ -74,7 +76,10 @@ class WalletsViewModel extends ViewModel {
     @NonNull
     Single<Wallet> addNextWallet() {
         return wallets.firstOrError()
-                .flatMap(list -> Observable.fromIterable(list)
+                //[*]wallets -> coinIds[1, 2, 3] (ids for coins what already have wallets) ->
+                // SELECT * FROM coins WHERE id NOT IN (coinIds) ORDER BY rank LIMIT 1
+                .flatMap(listOfWallets -> Observable
+                        .fromIterable(listOfWallets)
                         .map(wallet -> wallet.coin().id())
                         .toList()
                 )

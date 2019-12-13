@@ -21,7 +21,11 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class ConverterFragment extends Fragment {
 
-    private final CompositeDisposable fmtDisposable = new CompositeDisposable();
+    //Disposable in RxJava - there is something, what we can cancel and unsubscribe
+    //we need here 2 disposable objects: one for Fragment, one for Fragment View.
+    //it may happens that Fragment lives longer than View. For example, if Fragment has been sent
+    //to Backstack, his View will be destroyed, but Fragment will alive.
+    //private final CompositeDisposable fmtDisposable = new CompositeDisposable();
 
     private final CompositeDisposable viewDisposable = new CompositeDisposable();
 
@@ -85,12 +89,13 @@ public class ConverterFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        viewDisposable.clear();
         super.onDestroyView();
     }
 
-    @Override
+    /*@Override
     public void onDestroy() {
         fmtDisposable.clear();
         super.onDestroy();
-    }
+    }*/
 }

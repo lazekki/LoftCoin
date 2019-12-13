@@ -3,6 +3,7 @@ package com.loftschool.ozaharenko.loftcoin19.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -45,56 +46,36 @@ class FirestoreWalletsRepo implements WalletsRepo {
     @NonNull
     @Override
     public Observable<List<Wallet>> wallets(@NonNull Currency currency) {
-        return Observable
-            .<QuerySnapshot>create(emitter -> {
-                final ListenerRegistration registration = firestore
-                    .collection("wallets")
-                    .orderBy("created", Query.Direction.ASCENDING)
-                    .addSnapshotListener(executor, (snapshots, e) -> {
-                        if (e != null) {
-                            emitter.tryOnError(e);
-                        }
-                        else if (snapshots != null) {
-                            emitter.onNext(snapshots);
-                        }
-                    });
-                emitter.setCancellable(registration::remove);
-        })  //Observable<QuerySnapshot>
-        .map(QuerySnapshot::getDocuments)    //Observable<List<DocumentSnapshot>>
-        .switchMap(documents -> Observable
-                .fromIterable(documents)
-                .concatMapSingle(document -> coinsRepo
-                        .coin(currency, document.getLong("coinId"))
-                        .map(coin -> Wallet.create(
-                                document.getId(),
-                                coin,
-                                document.getDouble("balance")
-                        ))
-                )
-                .toList().toObservable()
-        );
+        return query(firestore
+                .collection("wallets")
+                .orderBy("created", Query.Direction.ASCENDING))
+                .map(QuerySnapshot::getDocuments)    //Observable<List<DocumentSnapshot>>
+                .switchMap(documents -> Observable
+                        .fromIterable(documents)
+                        //difference between concatMapSingle, switchMap and flatMap:
+                        //switchMap takes last result only, flatMap takes all results, concatMapSingle takes all results
+                        // keeping order.
+                        .concatMapSingle(document -> coinsRepo
+                                .coin(currency, document.getLong("coinId"))
+                                .map(coin -> Wallet.create(
+                                        document.getId(),
+                                        coin,
+                                        document.getDouble("balance")
+                                ))
+                        )
+                        .toList().toObservable()
+                );
     }
 
 
     @NonNull
     @Override
     public Observable<List<Transaction>> transactions(@NonNull Wallet wallet) {
-        return Observable
-            .<QuerySnapshot>create(emitter -> {
-                final ListenerRegistration registration = firestore
-                    .collection("wallets")
-                    .document(wallet.id())
-                    .collection("transactions")
-                    .orderBy("timestamp", Query.Direction.DESCENDING)
-                    .addSnapshotListener(executor, (snapshots, e) -> {
-                    if (e != null) {
-                        emitter.tryOnError(e);
-                    } else if (snapshots != null) {
-                        emitter.onNext(snapshots);
-                    }
-                });
-                emitter.setCancellable(registration::remove);
-            })
+        return query(firestore
+            .collection("wallets")
+            .document(wallet.id())
+            .collection("transactions")
+            .orderBy("timestamp", Query.Direction.DESCENDING))
             .map(QuerySnapshot::getDocuments)
             .switchMapSingle(documents -> Observable
                 .fromIterable(documents)
@@ -132,7 +113,26 @@ class FirestoreWalletsRepo implements WalletsRepo {
                         });
                     emitter.setCancellable(registration::remove);
                 }))
-                .map(document -> Wallet.create(document.getId(), coin, document.getDouble("balance")));
+                .map(document -> Wallet.create(
+                        document.getId(),
+                        coin,
+                        document.getDouble("balance")
+                ));
+    }
+
+    @NonNull
+    private Observable<QuerySnapshot> query(@NonNull Query reference) {
+        return Observable.create(emitter -> {
+            final ListenerRegistration registration = reference
+                    .addSnapshotListener(executor, (snapshots, e) -> {
+                        if (e != null) {
+                            emitter.tryOnError(e);
+                        } else if (snapshots != null) {
+                            emitter.onNext(snapshots);
+                        }
+                    });
+            emitter.setCancellable(registration::remove);
+        });
     }
 
 }
