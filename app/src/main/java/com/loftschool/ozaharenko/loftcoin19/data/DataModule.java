@@ -100,4 +100,7 @@ public abstract class DataModule {
     @Binds
     abstract LogoUrlFormatter logoUrlFormatter(CmcLogoUrl impl);
 
+    @Binds
+    abstract WalletsRepo walletsRepo(FirestoreWalletsRepo impl);
+
 }

@@ -14,4 +14,5 @@ public interface Coin {
 
     double change24h();
 
+    int rank();
 }

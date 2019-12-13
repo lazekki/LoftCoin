@@ -3,6 +3,7 @@ package com.loftschool.ozaharenko.loftcoin19;
 import android.app.Application;
 import android.os.StrictMode;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.loftschool.ozaharenko.loftcoin19.BuildConfig;
 import com.loftschool.ozaharenko.loftcoin19.log.LoftTree;
 
@@ -21,6 +22,7 @@ public class LoftApp extends Application {
         super.onCreate();
         if(BuildConfig.DEBUG) {
             StrictMode.enableDefaults();
+            FirebaseFirestore.setLoggingEnabled(true);
             Timber.plant(new LoftTree());
         }
 
