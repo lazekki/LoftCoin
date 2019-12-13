@@ -11,8 +11,6 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Document;
-
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +23,6 @@ import javax.inject.Singleton;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
-
-import static java.util.stream.Collectors.toList;
 
 @Singleton
 class FirestoreWalletsRepo implements WalletsRepo {

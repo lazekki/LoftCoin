@@ -61,9 +61,14 @@ public class WalletsFragment extends Fragment {
                 .build()
                 .inject(this);
         viewModel = new ViewModelProvider(this, vmFactory).get(WalletsViewModel.class);
-        fmtDisposable.add(viewModel.wallets().subscribe(walletsAdapter::submitList));
-        fmtDisposable.add(viewModel.transactions().subscribe(transactionsAdapter::submitList));
-        fmtDisposable.add(viewModel.transactions().subscribe(t -> Timber.d("%s", t)));
+        try {
+            fmtDisposable.add(viewModel.wallets().subscribe(walletsAdapter::submitList));
+            fmtDisposable.add(viewModel.transactions().subscribe(transactionsAdapter::submitList));
+            fmtDisposable.add(viewModel.transactions().subscribe(t -> Timber.d("%s", t)));
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Nullable

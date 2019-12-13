@@ -47,6 +47,7 @@ class WalletsViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io());
 
         transactions = wallets
+                .filter(listOfWallets -> !listOfWallets.isEmpty())
                 .switchMap(w -> walletPosition
                         .observeOn(Schedulers.io())
                         .distinctUntilChanged()
@@ -60,8 +61,9 @@ class WalletsViewModel extends ViewModel {
 
     @NonNull
     Observable<List<Wallet>> wallets() {
-
-        return wallets.observeOn(AndroidSchedulers.mainThread());
+        return wallets
+                .filter(listOfWallets -> !listOfWallets.isEmpty())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull
