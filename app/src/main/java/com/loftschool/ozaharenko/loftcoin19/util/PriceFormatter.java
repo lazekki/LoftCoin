@@ -36,4 +36,5 @@ public class PriceFormatter implements Formatter<Double> {
         decimalFormat.setDecimalFormatSymbols(symbols);
         return format.format(value);
     }
+
 }
