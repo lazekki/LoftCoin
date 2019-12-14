@@ -17,7 +17,7 @@ public class PriceFormatter implements Formatter<Double> {
     private final CurrencyRepo currencies;
 
     @Inject
-    PriceFormatter(CurrencyRepo currencies) {
+    public PriceFormatter(CurrencyRepo currencies) {
         this.currencies = currencies;
     }
 

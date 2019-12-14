@@ -17,7 +17,7 @@ android {
         //https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyInfo
         buildConfigField "String", "CMC_IMG_ENDPOINT", '"https://s2.coinmarketcap.com/static/img/coins/128x128/"'
 
-        testInstrumentationRunner "androidx.testrunner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -114,6 +114,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:1.1.1"
     androidTestImplementation "androidx.test.ext:truth:1.2.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
+    androidTestImplementation "com.google.truth:truth:1.0"
 
 }
 

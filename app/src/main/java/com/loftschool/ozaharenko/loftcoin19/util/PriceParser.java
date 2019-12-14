@@ -18,7 +18,7 @@ public class PriceParser implements Parser<String, Double> {
     private final CurrencyRepo currencies;
 
     @Inject
-    PriceParser(CurrencyRepo currencies) {
+    public PriceParser(CurrencyRepo currencies) {
         this.currencies = currencies;
     }
 
