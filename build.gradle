@@ -25,6 +25,9 @@ allprojects {
         resolutionStrategy {
             //https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.ResolutionStrategy.html
             force "com.google.auto.value:auto-value-annotations:1.7"
+            //jcenter.bintray.com
+            force "org.checkerframework:checker-compat-qual:2.5.5"
+            force "com.google.guava:guava:27.0.1-android"
         }
     }
 
